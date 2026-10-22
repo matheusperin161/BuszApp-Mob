@@ -2,10 +2,10 @@
 
 Versão mobile do **BusZapp** (rastreamento de ônibus, cartão de transporte e
 avaliações), feita com **React Native + Expo** e **Atomic Design**. Ela consome a
-API Flask que fica na pasta `BusZapp/`.
+API Flask do repositório `BusZapp` (pasta irmã `../BusZapp`).
 
-> **Entrega 1:** só a estrutura do projeto. Telas, componentes e serviços ainda
-> são esqueletos (`TODO`).
+> **Entrega 1:** estrutura do projeto. **Entrega 2:** motoristas (RF23) e viagens com
+> rastreamento. As demais telas (recarga, avaliação, perfil, cadastro) ainda são `TODO`.
 
 ## Estrutura
 
@@ -66,10 +66,29 @@ BusZappMobile/
 ## Rodando
 
 ```bash
-cd BusZappMobile
 nvm use
 npm install
-npx expo start
+npx expo start          # 'a' abre no emulador Android
 ```
 
-A URL da API fica em `src/services/config.js` (Flask na porta 5000).
+A URL da API fica em `src/services/config.js` (Flask na porta **8080**: `10.0.2.2` no emulador
+Android, `localhost` no simulador iOS). Em celular físico, aponte para o IP da máquina na rede:
+
+```bash
+EXPO_PUBLIC_API_URL=http://192.168.0.10:8080 npx expo start
+```
+
+## Entrega 2 — motoristas e viagens
+
+| Perfil     | O que tem no app                                                                 |
+|------------|----------------------------------------------------------------------------------|
+| admin      | Motoristas (busca nome/CPF, filtro de status, alerta de CNH vencida, cadastro/edição/exclusão) e mapa com todas as viagens em andamento |
+| motorista  | Iniciar viagem (linha, veículo e sentido ativos), envio da posição a cada 10 s com o app aberto, fila offline, finalizar |
+| passageiro | Acompanhar a linha no mapa com próxima parada e previsão de chegada              |
+
+- O perfil logado decide quais navegadores existem (`App.js`); quem não é admin não tem as telas de admin.
+- Sem permissão de localização a viagem não inicia; o app explica e abre as configurações.
+- Posições passam pela fila `src/services/filaPosicoes.js` (AsyncStorage): sem rede ficam no
+  aparelho e vão em lote quando o servidor responde de novo.
+- No Expo Go a permissão de localização é guardada por projeto, além da do Android: negar dentro
+  do app e liberar só nas configurações do sistema não basta lá. Num build próprio vale a do sistema.
