@@ -52,3 +52,25 @@ export function distancia(metros) {
   if (metros == null) return '—';
   return metros >= 1000 ? `${(metros / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(metros)} m`;
 }
+
+/**
+ * Saldo em centavos (inteiro, sem erro de ponto flutuante) → "R$ 1.234,56" (CA06.4).
+ * Feito à mão: o Intl do Hermes nem sempre tem o locale pt-BR.
+ */
+export function moeda(centavos) {
+  const valor = Math.round(Number(centavos) || 0);
+  const sinal = valor < 0 ? '-' : '';
+  const abs = Math.abs(valor);
+  const reais = String(Math.floor(abs / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return `${sinal}R$ ${reais},${String(abs % 100).padStart(2, '0')}`;
+}
+
+/** Máscara progressiva do número do cartão em grupos de 4 ("1234 5678 9012"). */
+export function mascaraCartao(valor) {
+  return somenteDigitos(valor).slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 ');
+}
+
+/** Número oculto para exibição e notificações: "•••• 9012". */
+export function cartaoOculto(numero) {
+  return `•••• ${String(numero ?? '').slice(-4)}`;
+}

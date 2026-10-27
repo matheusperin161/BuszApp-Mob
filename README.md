@@ -5,7 +5,9 @@ avaliações), feita com **React Native + Expo** e **Atomic Design**. Ela consom
 API Flask do repositório `BusZapp` (pasta irmã `../BusZapp`).
 
 > **Entrega 1:** estrutura do projeto. **Entrega 2:** motoristas (RF23) e viagens com
-> rastreamento. As demais telas (recarga, avaliação, perfil, cadastro) ainda são `TODO`.
+> rastreamento. **Entrega 3:** cartão de transporte (RF11/RF12, ainda sem banco), perfil com
+> câmera, notificações e painel de permissões — ver `docs/REGISTRO_ENTREGA3.md`.
+> As demais telas (recarga/extrato, avaliação, cadastro) ainda são `TODO`.
 
 ## Estrutura
 

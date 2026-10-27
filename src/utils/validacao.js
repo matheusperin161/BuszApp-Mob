@@ -47,3 +47,9 @@ export function senha(valor, { opcional = false } = {}) {
   if (opcional && !valor) return null;
   return String(valor ?? '').length >= 6 ? null : 'A senha deve ter pelo menos 6 caracteres';
 }
+
+/** Número do cartão de transporte: só dígitos, de 8 a 16 (CA06.1). */
+export function numeroCartao(valor) {
+  const d = somenteDigitos(valor);
+  return d.length >= 8 && d.length <= 16 ? null : 'O número do cartão deve ter de 8 a 16 dígitos';
+}

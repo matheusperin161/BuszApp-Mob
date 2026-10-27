@@ -15,7 +15,10 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,7 +30,22 @@
         {
           "locationWhenInUsePermission": "O BusZapp usa sua localização durante a viagem para os passageiros acompanharem o ônibus no mapa."
         }
-      ]
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "O BusZapp usa a câmera para você tirar sua foto de perfil.",
+          "photosPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#f59e0b"
+        }
+      ],
+      "expo-status-bar"
     ]
   }
 }

@@ -2,11 +2,12 @@
  * Menu lateral da área logada (equivale ao sidebar.js da versão web).
  * Uma rota (Passageiro) é outro navigator (abas). As outras são screens simples.
  *
- * Meu perfil e Avaliar viagem entram quando ProfileScreen/RatingScreen forem implementadas.
+ * Avaliar viagem entra quando RatingScreen for implementada.
  */
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 
 import { useAuth } from '../contexts/AuthContext';
+import ProfileScreen from '../screens/ProfileScreen';
 import { cores } from '../theme';
 import { opcoesCabecalho } from './opcoes';
 import PassengerTabs from './PassengerTabs';
@@ -30,6 +31,7 @@ export default function AppDrawer() {
       screenOptions={{ ...opcoesCabecalho, drawerActiveTintColor: cores.primariaEscura }}
     >
       <Drawer.Screen name="Passageiro" component={PassengerTabs} options={{ title: 'BusZapp', drawerLabel: 'Início' }} />
+      <Drawer.Screen name="Perfil" component={ProfileScreen} options={{ title: 'Meu perfil' }} />
     </Drawer.Navigator>
   );
 }

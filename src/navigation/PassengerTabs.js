@@ -1,13 +1,12 @@
 /**
- * Abas inferiores do passageiro: Início, Acompanhar e Recarga.
+ * Abas inferiores do passageiro: Início, Acompanhar e Cartão.
  * (equivale ao bottom-nav.js da versão web)
- *
- * Recarga entra quando RechargeScreen/cartao.js forem implementados.
  */
 import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../screens/HomeScreen';
+import RechargeScreen from '../screens/RechargeScreen';
 import TrackingScreen from '../screens/TrackingScreen';
 import { cores } from '../theme';
 
@@ -26,6 +25,7 @@ export default function PassengerTabs() {
     >
       <Tabs.Screen name="Início" component={HomeScreen} options={{ tabBarIcon: icone('🏠') }} />
       <Tabs.Screen name="Acompanhar" component={TrackingScreen} options={{ tabBarIcon: icone('🗺️') }} />
+      <Tabs.Screen name="Cartão" component={RechargeScreen} options={{ tabBarIcon: icone('💳') }} />
     </Tabs.Navigator>
   );
 }
