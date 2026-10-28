@@ -53,3 +53,15 @@ export function numeroCartao(valor) {
   const d = somenteDigitos(valor);
   return d.length >= 8 && d.length <= 16 ? null : 'O número do cartão deve ter de 8 a 16 dígitos';
 }
+
+/** Faixa válida de latitude: -90 a 90 (CA05.1). */
+export function latitude(valor) {
+  const n = Number(valor);
+  return valor !== '' && !Number.isNaN(n) && n >= -90 && n <= 90 ? null : 'Latitude deve estar entre -90 e 90';
+}
+
+/** Faixa válida de longitude: -180 a 180 (CA05.1). */
+export function longitude(valor) {
+  const n = Number(valor);
+  return valor !== '' && !Number.isNaN(n) && n >= -180 && n <= 180 ? null : 'Longitude deve estar entre -180 e 180';
+}

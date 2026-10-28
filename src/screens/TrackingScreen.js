@@ -6,7 +6,7 @@
  * CA08.5 veículos com viagem em andamento na linha · CA08.6 próxima parada e ETA
  */
 import { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import Label from '../components/atoms/Label';
 import EstadoCarga from '../components/molecules/EstadoCarga';
@@ -19,6 +19,7 @@ import { useAtualizacaoPeriodica } from '../hooks/useAtualizacaoPeriodica';
 import { INTERVALO_ATUALIZACAO_MAPA_MS } from '../services/config';
 import { listarLinhas, viagensDaLinha } from '../services/rastreamento';
 import { espacos } from '../theme';
+import { minutos } from '../utils/formatacao';
 
 export default function TrackingScreen() {
   const [linhas, setLinhas] = useState(null);
@@ -74,6 +75,20 @@ export default function TrackingScreen() {
             mensagemVazia="Nenhum ônibus em viagem nesta linha agora."
           />
           {viagens?.map((v) => <TripCard key={v.id} viagem={v} />)}
+
+          <Label variante="subtitulo" style={styles.tituloParadas}>
+            Paradas do trajeto
+          </Label>
+          {linha.paradas?.map((p, i) => (
+            <View key={p.id} style={styles.paradaLinha}>
+              <Label variante="corpo">
+                {i + 1}. {p.nome}
+              </Label>
+              {i < linha.paradas.length - 1 ? (
+                <Label variante="legenda">{minutos(p.tempo_estimado_minutos)} até a próxima</Label>
+              ) : null}
+            </View>
+          ))}
         </>
       ) : (
         <Label variante="legenda" style={styles.vazio}>
@@ -86,4 +101,6 @@ export default function TrackingScreen() {
 
 const styles = StyleSheet.create({
   vazio: { marginTop: espacos.lg },
+  tituloParadas: { marginTop: espacos.lg, marginBottom: espacos.sm },
+  paradaLinha: { marginBottom: espacos.sm },
 });

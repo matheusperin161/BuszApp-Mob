@@ -18,6 +18,12 @@ export default function AdminScreen({ navigation }) {
         onPress={() => navigation.navigate('Motoristas')}
       />
       <MenuButton
+        icone="🚏"
+        titulo="Rotas e paradas"
+        descricao="Cadastrar paradas e associá-las às linhas"
+        onPress={() => navigation.navigate('Rotas')}
+      />
+      <MenuButton
         icone="🗺️"
         titulo="Viagens em andamento"
         descricao="Todos os ônibus em viagem em um único mapa"

@@ -55,7 +55,7 @@ export default function BusMap({ paradas = [], viagens = [], style }) {
           <Marker
             key={`p${p.id}`}
             coordinate={{ latitude: p.latitude, longitude: p.longitude }}
-            title={p.name}
+            title={p.nome}
             pinColor={cores.info}
           />
         ))}
@@ -68,7 +68,7 @@ export default function BusMap({ paradas = [], viagens = [], style }) {
               title={`Linha ${v.linha?.numero ?? ''} · ${v.veiculo?.plate ?? ''}`}
               description={
                 v.proxima_parada
-                  ? `Próxima: ${v.proxima_parada.name} em ${minutos(v.proxima_parada.eta_min)} (${hora(v.proxima_parada.chegada_estimada)})`
+                  ? `Próxima: ${v.proxima_parada.nome} em ${minutos(v.proxima_parada.eta_min)} (${hora(v.proxima_parada.chegada_estimada)})`
                   : `Atualizado às ${hora(v.ultima_posicao.registrado_em)}`
               }
             >
