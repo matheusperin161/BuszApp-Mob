@@ -35,6 +35,7 @@ export async function salvarUsuario(usuario) {
   await AsyncStorage.setItem(CHAVE_USUARIO, JSON.stringify(usuario));
 }
 
+/** JSON corrompido devolve null em vez de quebrar o app */
 export async function obterUsuario() {
   const raw = await AsyncStorage.getItem(CHAVE_USUARIO);
   if (!raw) return null;
