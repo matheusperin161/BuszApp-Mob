@@ -83,3 +83,14 @@ test('força da senha vai de 0 a 4', () => {
   expect(forcaSenha('abcdefgh12')).toBe(3);
   expect(forcaSenha('Abcdefgh12')).toBe(4);
 });
+
+test('primeiro erro e erro visível só após tocar o campo', () => {
+  expect(primeiroErro({ nome: null, email: 'E-mail inválido.', senha: 'Informe a senha.' })).toBe(
+    'E-mail inválido.',
+  );
+  expect(primeiroErro({ nome: null, email: null })).toBeNull();
+
+  const erros = { email: 'E-mail inválido.' };
+  expect(erroVisivel({}, erros, 'email')).toBeNull();
+  expect(erroVisivel({ email: true }, erros, 'email')).toBe('E-mail inválido.');
+});
