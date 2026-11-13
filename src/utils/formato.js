@@ -25,6 +25,7 @@ function doisDigitos(n) {
   return String(n).padStart(2, '0');
 }
 
+/** DD/MM/AAAA no horário do aparelho; '—' se a data vier vazia */
 export function dataCurta(texto) {
   const d = lerDataApi(texto);
   if (!d) return '—';
