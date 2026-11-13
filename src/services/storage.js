@@ -25,6 +25,7 @@ export async function obterToken() {
   return creds ? creds.password : null;
 }
 
+/** logout: apaga o token e também o perfil salvo */
 export async function removerToken() {
   await Keychain.resetGenericPassword({ service: SERVICO_TOKEN });
   await AsyncStorage.removeItem(CHAVE_USUARIO);
