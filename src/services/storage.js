@@ -46,6 +46,7 @@ export async function obterUsuario() {
   }
 }
 
+/** salvarLocal/obterLocal/removerLocal: preferências não secretas (AsyncStorage) */
 export async function salvarLocal(chave, valor) {
   await AsyncStorage.setItem(chave, JSON.stringify(valor));
 }
