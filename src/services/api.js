@@ -33,7 +33,9 @@ export class ApiError extends Error {
 
 function mensagemHttp(status, data) {
   // O Flask do BusZapp responde { error: "..." }; mantemos message por compatibilidade
-  if (data && (data.error || data.message)) return data.error || data.message;
+  // só aceita texto: um { error: {...} } não pode virar "[object Object]" na tela
+  const texto = data && [data.error, data.message].find(m => typeof m === 'string' && m.trim());
+  if (texto) return texto;
   if (status === 400) return 'Pedido inválido.';
   if (status === 401) return 'Sessão expirada. Faça login novamente.';
   if (status === 403) return 'Você não tem permissão para isso.';
