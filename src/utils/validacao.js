@@ -46,6 +46,7 @@ export function validarEmail(valor) {
   return null;
 }
 
+/** minima: true só no cadastro — no login qualquer senha não vazia passa */
 export function validarSenha(valor, { minima = false } = {}) {
   if (!valor) return 'Informe a senha.';
   if (minima && valor.length < LIMITES.senhaMin) {
