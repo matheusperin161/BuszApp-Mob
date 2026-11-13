@@ -92,9 +92,11 @@ export function validarNumeroCartao(valor) {
   return null;
 }
 
-/** aceita "20", "20,50" ou "20.50" */
+/** aceita "20", "20,50", "20.50" ou "1.234,56" (ponto de milhar quando há vírgula) */
 export function lerValor(valor) {
-  const numero = Number(String(valor ?? '').replace(/\s/g, '').replace(',', '.'));
+  let texto = String(valor ?? '').replace(/\s/g, '');
+  if (texto.includes(',')) texto = texto.replace(/\./g, '');
+  const numero = Number(texto.replace(',', '.'));
   return Number.isFinite(numero) ? Math.round(numero * 100) / 100 : NaN;
 }
 
