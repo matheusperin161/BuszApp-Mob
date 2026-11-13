@@ -82,6 +82,7 @@ export function validarCodigo(valor) {
   return null;
 }
 
+/** ignora espaços e traços: conta só os dígitos */
 export function validarNumeroCartao(valor) {
   const digitos = String(valor ?? '').replace(/\D/g, '');
   if (!digitos) return 'Informe o número do cartão.';
