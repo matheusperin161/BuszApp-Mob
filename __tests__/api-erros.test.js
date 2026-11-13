@@ -57,3 +57,16 @@ test.each([
   fetch.mockReturnValueOnce(resposta(status));
   await expect(apiRequest('/lines', { auth: false })).rejects.toThrow(mensagem);
 });
+
+test('error que não é texto não vira [object Object]', async () => {
+  fetch.mockReturnValueOnce(resposta(400, JSON.stringify({ error: { campo: 'email' } })));
+  await expect(apiRequest('/register', { method: 'POST', body: {}, auth: false })).rejects.toThrow(
+    'Pedido inválido.',
+  );
+});
+
+test('rota sem barra inicial recebe a barra', async () => {
+  fetch.mockReturnValueOnce(resposta(200, '[]'));
+  await apiRequest('lines', { auth: false });
+  expect(fetch.mock.calls[0][0]).toBe(`${API_PREFIX}/lines`);
+});
