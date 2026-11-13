@@ -68,3 +68,9 @@ test('nome, senha e confirmação', () => {
   expect(validarConfirmacaoSenha('abc123', 'abc124')).toBeTruthy();
   expect(validarConfirmacaoSenha('abc123', 'abc123')).toBeNull();
 });
+
+test('texto livre', () => {
+  expect(validarTexto('', { rotulo: 'comentário' })).toBe('Escreva o comentário.');
+  expect(validarTexto('x'.repeat(501), { rotulo: 'comentário' })).toMatch(/^Comentário pode ter/);
+  expect(validarTexto('Ônibus pontual')).toBeNull();
+});
