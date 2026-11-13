@@ -52,3 +52,19 @@ test('valor com ponto de milhar', () => {
   expect(lerValor('20.50')).toBe(20.5);
   expect(lerValor(' 35 ')).toBe(35);
 });
+
+test('nome, senha e confirmação', () => {
+  expect(validarNome(' ')).toBeTruthy();
+  expect(validarNome('A')).toBeTruthy();
+  expect(validarNome('  Ana  ')).toBeNull();
+  expect(validarNome('x'.repeat(81))).toBeTruthy();
+
+  expect(validarSenha('')).toBeTruthy();
+  expect(validarSenha('123')).toBeNull();
+  expect(validarSenha('123', { minima: true })).toBeTruthy();
+  expect(validarSenha('123456', { minima: true })).toBeNull();
+
+  expect(validarConfirmacaoSenha('abc123', '')).toBeTruthy();
+  expect(validarConfirmacaoSenha('abc123', 'abc124')).toBeTruthy();
+  expect(validarConfirmacaoSenha('abc123', 'abc123')).toBeNull();
+});
