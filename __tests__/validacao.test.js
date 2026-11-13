@@ -1,6 +1,13 @@
 import {
+  erroVisivel,
+  forcaSenha,
   lerValor,
+  primeiroErro,
   validarCodigo,
+  validarConfirmacaoSenha,
+  validarNome,
+  validarSenha,
+  validarTexto,
   validarEmail,
   validarNumeroCartao,
   validarValorRecarga,
@@ -38,4 +45,10 @@ test('formatação', () => {
   expect(mascararCartao('1234567812345678')).toBe('•••• •••• •••• 5678');
   // data do backend vem em UTC sem fuso
   expect(lerDataApi('2026-11-03T02:17:11').toISOString()).toBe('2026-11-03T02:17:11.000Z');
+});
+
+test('valor com ponto de milhar', () => {
+  expect(lerValor('1.234,56')).toBe(1234.56);
+  expect(lerValor('20.50')).toBe(20.5);
+  expect(lerValor(' 35 ')).toBe(35);
 });
