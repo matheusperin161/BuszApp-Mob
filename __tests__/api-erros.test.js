@@ -34,3 +34,16 @@ test('pedido abortado vira causa timeout', async () => {
     causa: 'timeout',
   });
 });
+
+test('204 devolve null sem ler o corpo', async () => {
+  fetch.mockReturnValueOnce(resposta(204));
+  expect(await apiRequest('/logout', { method: 'POST', auth: false })).toBeNull();
+});
+
+test('HTML de erro do nginx usa a mensagem padrão do status', async () => {
+  fetch.mockReturnValueOnce(resposta(502, '<html>Bad Gateway</html>'));
+  await expect(apiRequest('/lines', { auth: false })).rejects.toMatchObject({
+    status: 502,
+    message: 'Erro no servidor. Tente mais tarde.',
+  });
+});
