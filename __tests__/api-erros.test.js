@@ -24,3 +24,13 @@ test('sem rede vira causa rede com status 0', async () => {
     causa: 'rede',
   });
 });
+
+test('pedido abortado vira causa timeout', async () => {
+  const abortado = new Error('Aborted');
+  abortado.name = 'AbortError';
+  fetch.mockRejectedValueOnce(abortado);
+  await expect(apiRequest('/lines', { auth: false })).rejects.toMatchObject({
+    status: 0,
+    causa: 'timeout',
+  });
+});
