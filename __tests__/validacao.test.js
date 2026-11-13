@@ -74,3 +74,12 @@ test('texto livre', () => {
   expect(validarTexto('x'.repeat(501), { rotulo: 'comentário' })).toMatch(/^Comentário pode ter/);
   expect(validarTexto('Ônibus pontual')).toBeNull();
 });
+
+test('força da senha vai de 0 a 4', () => {
+  expect(forcaSenha('')).toBe(0);
+  expect(forcaSenha('abc')).toBe(0);
+  expect(forcaSenha('abcdef')).toBe(1);
+  expect(forcaSenha('abcdef12')).toBe(2);
+  expect(forcaSenha('abcdefgh12')).toBe(3);
+  expect(forcaSenha('Abcdefgh12')).toBe(4);
+});
