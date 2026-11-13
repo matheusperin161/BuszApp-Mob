@@ -24,6 +24,7 @@ export const LIMITES = {
  */
 export const REGEX_EMAIL = /^[^\s@]+@[^\s@]+(\.[^\s@]+)?$/;
 
+/** nome entre LIMITES.nomeMin e LIMITES.nomeMax, já sem espaços nas pontas */
 export function validarNome(valor) {
   const nome = String(valor ?? '').trim();
   if (!nome) return 'Informe o nome.';
