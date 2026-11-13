@@ -73,6 +73,7 @@ export function mascararCartao(numero) {
   return `•••• •••• •••• ${fim}`;
 }
 
+/** abaixo de 1 km mostra em metros; acima, em km com vírgula */
 export function distancia(metros) {
   if (metros == null) return '—';
   return metros >= 1000 ? `${(metros / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(metros)} m`;
