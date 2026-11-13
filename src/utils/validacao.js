@@ -52,6 +52,7 @@ export function validarSenha(valor, { minima = false } = {}) {
   if (minima && valor.length < LIMITES.senhaMin) {
     return `Senha precisa ter pelo menos ${LIMITES.senhaMin} caracteres.`;
   }
+  if (minima && !valor.trim()) return 'A senha não pode ter só espaços.';
   return null;
 }
 
