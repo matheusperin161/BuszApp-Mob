@@ -78,3 +78,4 @@ yarn-error.log
 # projeto React Native criado por engano dentro desta pasta
 # (tem .git proprio; era commitado como submodulo quebrado)
 /MeuApp/
+_to_delete/
