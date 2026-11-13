@@ -47,3 +47,13 @@ test('HTML de erro do nginx usa a mensagem padrão do status', async () => {
     message: 'Erro no servidor. Tente mais tarde.',
   });
 });
+
+test.each([
+  [403, 'Você não tem permissão para isso.'],
+  [404, 'Recurso não encontrado.'],
+  [409, 'Conflito: esse dado já existe.'],
+  [429, 'Muitas tentativas. Aguarde um pouco e tente de novo.'],
+])('status %i sem corpo vira mensagem padrão', async (status, mensagem) => {
+  fetch.mockReturnValueOnce(resposta(status));
+  await expect(apiRequest('/lines', { auth: false })).rejects.toThrow(mensagem);
+});
