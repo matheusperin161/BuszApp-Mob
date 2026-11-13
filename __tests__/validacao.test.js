@@ -94,3 +94,8 @@ test('primeiro erro e erro visível só após tocar o campo', () => {
   expect(erroVisivel({}, erros, 'email')).toBeNull();
   expect(erroVisivel({ email: true }, erros, 'email')).toBe('E-mail inválido.');
 });
+
+test('senha nova não pode ter só espaços', () => {
+  expect(validarSenha('      ', { minima: true })).toBeTruthy();
+  expect(validarSenha(' abc12 ', { minima: true })).toBeNull();
+});
