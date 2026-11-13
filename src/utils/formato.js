@@ -5,6 +5,7 @@
 
 const moeda = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
+/** valor inválido vira R$ 0,00 em vez de NaN na tela */
 export function dinheiro(valor) {
   return moeda.format(Number(valor) || 0);
 }
