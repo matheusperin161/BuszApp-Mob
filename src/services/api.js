@@ -70,7 +70,8 @@ export async function apiRequest(
 
   let response;
   try {
-    response = await fetch(`${API_PREFIX}${path}`, {
+    const rota = path.startsWith('/') ? path : `/${path}`;
+    response = await fetch(`${API_PREFIX}${rota}`, {
       method,
       headers,
       // form (FormData) é usado no upload da foto; o fetch monta o multipart sozinho
