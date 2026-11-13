@@ -63,12 +63,14 @@ export function validarConfirmacaoSenha(senha, confirmacao) {
 
 export function validarTexto(valor, { rotulo = 'texto' } = {}) {
   const texto = String(valor ?? '').trim();
+  // o rótulo abre a frase nas duas últimas mensagens
+  const Rotulo = rotulo.charAt(0).toUpperCase() + rotulo.slice(1);
   if (!texto) return `Escreva o ${rotulo}.`;
   if (texto.length < LIMITES.textoMin) {
-    return `${rotulo} precisa ter pelo menos ${LIMITES.textoMin} caractere.`;
+    return `${Rotulo} precisa ter pelo menos ${LIMITES.textoMin} caractere.`;
   }
   if (texto.length > LIMITES.textoMax) {
-    return `${rotulo} pode ter no máximo ${LIMITES.textoMax} caracteres.`;
+    return `${Rotulo} pode ter no máximo ${LIMITES.textoMax} caracteres.`;
   }
   return null;
 }
