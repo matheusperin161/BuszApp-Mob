@@ -25,7 +25,7 @@ Segue a organização do projeto de referência da disciplina (`MeuAppCLI`, prof
 | O quê | Versão | Observação |
 |---|---|---|
 | **Node.js** | 22 (mínimo 22.11) | recomendado pelo [nvm](https://github.com/nvm-sh/nvm) (Mac/Linux) ou [nvm-windows](https://github.com/coreybutler/nvm-windows) |
-| **Android Studio** | atual | instala o SDK, o `adb` e o Java (JBR) |
+| **Android Studio** | atual | instala o SDK, o `adb` e o Java (JBR) — ou veja a [alternativa sem Android Studio](#alternativa-sem-android-studio-só-celular-no-cabo) |
 | **Git** | qualquer | |
 | Xcode + CocoaPods | só para iPhone | só no Mac |
 
@@ -54,6 +54,48 @@ export NVM_DIR="$HOME/.nvm"
 | `Path` (acrescentar) | `%ANDROID_HOME%\platform-tools` e `%ANDROID_HOME%\emulator` |
 
 Feche e abra o terminal e confira: `node -v` (v22…), `adb version` e `java -version`.
+
+### Alternativa: sem Android Studio (só celular no cabo)
+
+Não precisa do Android Studio para compilar: bastam o **Java 17**, as **ferramentas de linha
+de comando do Android** e o celular ligado no USB (passo 4). Faça isto no lugar dos passos 1 e 2.
+
+**Mac** (com [Homebrew](https://brew.sh)):
+
+```bash
+brew install --cask temurin@17 android-commandlinetools
+```
+
+Cole no fim do `~/.zshrc` e rode `source ~/.zshrc`:
+
+```bash
+export JAVA_HOME="$(/usr/libexec/java_home -v 17)"
+export ANDROID_HOME="/opt/homebrew/share/android-commandlinetools"
+export PATH="$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin"
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+```
+
+(Mac com Intel: troque `/opt/homebrew` por `/usr/local`.)
+
+**Windows:**
+
+1. Instale o **JDK 17** da [Adoptium (Temurin)](https://adoptium.net/temurin/releases/?version=17) — marque a opção *Set JAVA_HOME*.
+2. Baixe o *Command line tools only* em [developer.android.com/studio](https://developer.android.com/studio#command-line-tools-only)
+   e extraia de modo que fique `C:\Android\cmdline-tools\latest\bin\sdkmanager.bat`.
+3. Variáveis de ambiente: `ANDROID_HOME` = `C:\Android` e, no `Path`,
+   `%ANDROID_HOME%\platform-tools` e `%ANDROID_HOME%\cmdline-tools\latest\bin`.
+
+**Depois, nos dois sistemas** (feche e abra o terminal antes), instale o SDK que o projeto usa:
+
+```bash
+sdkmanager --licenses
+sdkmanager "platform-tools" "platforms;android-37" "build-tools;37.0.0" "ndk;27.1.12297006"
+```
+
+Responda `y` às licenças. Confira com `java -version` (17) e `adb devices` (celular como `device`).
+Daí em diante é igual: passos 3, 4 (celular) e 5. Sem Android Studio não há emulador —
+use o celular.
 
 ### 3. Baixe o projeto e instale as dependências
 
