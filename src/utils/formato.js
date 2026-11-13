@@ -65,6 +65,7 @@ export function hojeIso() {
   return `${d.getFullYear()}-${doisDigitos(d.getMonth() + 1)}-${doisDigitos(d.getDate())}`;
 }
 
+/** mostra só os 4 últimos dígitos do cartão */
 export function mascararCartao(numero) {
   const digitos = String(numero ?? '').replace(/\D/g, '');
   if (!digitos) return '•••• •••• •••• ••••';
