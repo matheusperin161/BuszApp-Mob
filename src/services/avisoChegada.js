@@ -128,6 +128,7 @@ const ESTADO_INICIAL = { ativo: false, alvo: null, ultimo: null, verificadoEm: n
 let estado = ESTADO_INICIAL;
 const ouvintes = new Set();
 let pararLaco = null;
+let lacoAtual = null;
 
 function mudar(parcial) {
   estado = { ...estado, ...parcial };
@@ -233,9 +234,16 @@ function executarLaco(alvo) {
       encerrado = true;
       clearInterval(timer);
       pararLaco = null;
+      lacoAtual = null;
       resolve();
     };
   });
+}
+
+/** um laço só: se o serviço chamar a tarefa de novo, devolve o que já está rodando */
+function garantirLaco(alvo) {
+  if (!lacoAtual) lacoAtual = executarLaco(alvo);
+  return lacoAtual;
 }
 
 /** tarefa do serviço em primeiro plano (chamada pelo index.js) */
@@ -246,7 +254,7 @@ export async function tarefaDoAviso() {
     return;
   }
   mudar({ ativo: true, alvo });
-  await executarLaco(alvo);
+  await garantirLaco(alvo);
 }
 
 /**
@@ -281,7 +289,7 @@ export async function iniciarAviso({ linha, parada, paradas, minutos = 5 }) {
     // o Notifee chama tarefaDoAviso(), que roda o laço
     await atualizarNotificacaoFixa(alvo, `Vamos avisar quando o ônibus estiver a ${minutos} min de ${parada.name}.`);
   } else {
-    executarLaco(alvo);
+    garantirLaco(alvo);
   }
   return alvo;
 }
