@@ -13,7 +13,7 @@ import { forwardRef, useState } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
 
 import { espacamentos, raios, tipografia } from '../../theme';
-import { criarEstilos, useTema } from '../../theme/tema';
+import { criarEstilos, escalarTexto, useTema } from '../../theme/tema';
 import { Icone } from './Icone';
 
 export const Input = forwardRef(function Input(
@@ -31,7 +31,7 @@ export const Input = forwardRef(function Input(
   ref,
 ) {
   const styles = useStyles();
-  const { cores } = useTema();
+  const { cores, escalaFonte } = useTema();
   const [focado, setFocado] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const senha = Boolean(secureTextEntry);
@@ -52,7 +52,7 @@ export const Input = forwardRef(function Input(
         placeholderTextColor={cores.textoFraco}
         {...props}
         secureTextEntry={senha && !mostrarSenha}
-        style={[styles.input, style]}
+        style={escalarTexto([styles.input, style], escalaFonte)}
         onFocus={evento => {
           setFocado(true);
           onFocus?.(evento);

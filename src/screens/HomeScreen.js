@@ -5,7 +5,7 @@
  * Melhorias do app: aviso de saldo baixo e atalho para a última linha acompanhada.
  */
 import { useCallback, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Icone } from '../components/atoms/Icone';
@@ -94,7 +94,10 @@ export function HomeScreen({ navigation }) {
   const temCartao = Boolean(cartao?.card_number);
   const saldo = cartao?.card_balance;
   const ultimas = transacoes.slice(0, 4);
-  const ultimaLinha = prefs?.ultimaLinha;
+  const favoritas = prefs?.favoritas ?? [];
+  const ultimaLinha = favoritas.some(f => String(f.numero) === String(prefs?.ultimaLinha?.numero))
+    ? null
+    : prefs?.ultimaLinha;
 
   return (
     <ScreenTemplate
@@ -133,6 +136,31 @@ export function HomeScreen({ navigation }) {
         <AtalhoTile icone="map-pin" rotulo="Rastrear" onPress={() => navigation.navigate('Mapa')} />
         <AtalhoTile icone="star" rotulo="Avaliar" onPress={() => navigation.navigate('Avaliar')} />
       </View>
+
+      {favoritas.length ? (
+        <View style={styles.favoritas}>
+          <Label variante="secao" style={styles.favoritasTitulo}>
+            Minhas linhas
+          </Label>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.favoritasLista}>
+            {favoritas.map(f => (
+              <Pressable
+                key={f.numero}
+                onPress={() => navigation.navigate('Acompanhamento', { linha: f })}
+                accessibilityRole="button"
+                accessibilityLabel={`Abrir linha ${f.numero}, ${f.nome}`}
+                style={({ pressed }) => [styles.favorita, pressed && styles.pressionado]}>
+                <View style={[styles.continuarNumero, { backgroundColor: corDaLinha(f.numero) }]}>
+                  <Label style={styles.continuarNumeroTexto}>{f.numero}</Label>
+                </View>
+                <Label style={styles.favoritaNome} numberOfLines={2}>
+                  {f.nome}
+                </Label>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      ) : null}
 
       {ultimaLinha ? (
         <Pressable
@@ -185,6 +213,18 @@ const useStyles = criarEstilos(({ cores, sombra }) => ({
     ...sombra,
   },
   pressionado: { opacity: 0.85 },
+  favoritas: { marginBottom: espacamentos.md },
+  favoritasTitulo: { marginBottom: espacamentos.sm, paddingHorizontal: espacamentos.xs },
+  favoritasLista: { gap: espacamentos.sm, paddingRight: espacamentos.md },
+  favorita: {
+    width: 128,
+    padding: espacamentos.md,
+    gap: espacamentos.sm,
+    borderRadius: 16,
+    backgroundColor: cores.superficie,
+    ...sombra,
+  },
+  favoritaNome: { fontWeight: '700', fontSize: 14 },
   continuarNumero: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   continuarNumeroTexto: { color: '#FFFFFF', fontWeight: '800' },
   continuarNome: { fontWeight: '700', fontSize: 16 },

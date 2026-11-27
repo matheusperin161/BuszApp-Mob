@@ -1,6 +1,8 @@
 /**
  * SCREEN — SettingsScreen
  * Preferências no AsyncStorage. Sobrevivem ao logout.
+ * Aparência (claro/escuro), acessibilidade (letra e contraste), avisos e
+ * horários salvos para usar sem internet.
  */
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, Switch, View } from 'react-native';
@@ -9,6 +11,7 @@ import { Button } from '../components/atoms/Button';
 import { Icone } from '../components/atoms/Icone';
 import { Label } from '../components/atoms/Label';
 import { Card } from '../components/molecules/Card';
+import { ChipGrupo } from '../components/molecules/ChipGrupo';
 import { ErrorMessage } from '../components/molecules/ErrorMessage';
 import { InfoLinha } from '../components/molecules/InfoLinha';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
@@ -18,11 +21,13 @@ import {
   enviarAvisoLocal,
   pedirPermissaoNotificacao,
 } from '../services/nativos';
+import { baixarTudo, resumoOffline } from '../services/offline';
 import { obterPreferencias, salvarPreferencias } from '../services/preferencias';
-import { espacamentos } from '../theme';
+import { ESCALAS_FONTE, espacamentos } from '../theme';
 import { criarEstilos, useTema } from '../theme/tema';
+import { dataHora } from '../utils/formato';
 
-const VERSAO = '1.1.0';
+const VERSAO = '1.2.0';
 
 const APARENCIA = [
   { id: 'sistema', rotulo: 'Sistema', icone: 'monitor', descricao: 'Segue o celular' },
@@ -32,15 +37,30 @@ const APARENCIA = [
 
 export function SettingsScreen() {
   const styles = useStyles();
-  const { cores, modo, setModo } = useTema();
+  const { cores, modo, setModo, escalaFonte, altoContraste, setAcessibilidade } = useTema();
   const [prefs, setPrefs] = useState(null);
+  const [offline, setOffline] = useState(null);
+  const [baixando, setBaixando] = useState(null);
   const [ocupado, setOcupado] = useState(false);
   const [erro, setErro] = useState(null);
 
   useEffect(() => {
     configurarNotificacoes();
     obterPreferencias().then(setPrefs);
+    resumoOffline().then(setOffline);
   }, []);
+
+  async function baixar() {
+    setErro(null);
+    setBaixando({ feitas: 0, total: 0 });
+    try {
+      setOffline(await baixarTudo((feitas, total) => setBaixando({ feitas, total })));
+    } catch (e) {
+      setErro(e.message);
+    } finally {
+      setBaixando(null);
+    }
+  }
 
   async function mudar(id, valor) {
     setErro(null);
@@ -112,6 +132,53 @@ export function SettingsScreen() {
           })}
         </View>
       </Card>
+      <Card titulo="Acessibilidade" icone="eye">
+        <ChipGrupo
+          label="Tamanho da letra"
+          opcoes={ESCALAS_FONTE}
+          valor={escalaFonte}
+          onChange={v => setAcessibilidade({ escalaFonte: v })}
+        />
+        <View style={[styles.linha, styles.linhaTopo]}>
+          <View style={styles.textos}>
+            <Label style={styles.opcaoTitulo}>Alto contraste</Label>
+            <Label variante="legenda">Textos e bordas mais fortes, bom para o sol ou para quem enxerga pouco.</Label>
+          </View>
+          <Switch
+            value={altoContraste}
+            onValueChange={v => setAcessibilidade({ altoContraste: v })}
+            trackColor={{ true: cores.primaria, false: cores.bordaNeutra }}
+            thumbColor={cores.superficie}
+            accessibilityLabel="Alto contraste"
+          />
+        </View>
+        <Label variante="legenda">
+          Os botões e ícones têm descrição para o leitor de tela (TalkBack/VoiceOver).
+        </Label>
+      </Card>
+
+      <Card titulo="Horários sem internet" icone="wifi-off">
+        <Label variante="legenda" style={styles.offlineTexto}>
+          {offline
+            ? `${offline.linhas} linhas salvas em ${dataHora(offline.salvoEm)}. As linhas que você abre também ficam salvas sozinhas.`
+            : 'Baixe os horários e as paradas de todas as linhas para consultar no ponto, mesmo sem sinal.'}
+        </Label>
+        <Button
+          title={
+            baixando
+              ? `Baixando ${baixando.feitas}/${baixando.total || '…'}`
+              : offline
+                ? 'Atualizar horários salvos'
+                : 'Baixar horários de todas as linhas'
+          }
+          icone="arrow-down-circle"
+          variante="secundario"
+          onPress={baixar}
+          desabilitado={Boolean(baixando)}
+          style={styles.botaoCard}
+        />
+      </Card>
+
       <Card titulo="Preferências" icone="settings">
         {opcoes.map((opcao, i) => (
           <View key={opcao.id} style={[styles.linha, i < opcoes.length - 1 && styles.divisor]}>
@@ -125,6 +192,7 @@ export function SettingsScreen() {
               disabled={!prefs}
               trackColor={{ true: cores.primaria, false: cores.bordaNeutra }}
               thumbColor={cores.superficie}
+              accessibilityLabel={opcao.titulo}
             />
           </View>
         ))}
@@ -176,4 +244,7 @@ const useStyles = criarEstilos(({ cores }) => ({
   textos: { flex: 1, marginRight: espacamentos.md },
   opcaoTitulo: { fontWeight: '700', fontSize: 16 },
   botao: { marginBottom: espacamentos.md },
+  linhaTopo: { marginTop: espacamentos.sm },
+  offlineTexto: { marginBottom: espacamentos.md },
+  botaoCard: { marginBottom: 0 },
 }));

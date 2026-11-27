@@ -9,6 +9,8 @@
     <!-- envio da localização com a tela bloqueada (serviço em primeiro plano do motorista) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- aviso de chegada do passageiro: consulta o servidor com o app fechado -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <queries>
@@ -39,10 +41,10 @@
         </intent-filter>
       </activity>
 
-      <!-- Serviço do Notifee usado no trajeto do motorista: tipo "location" (exigência do Android 14) -->
+      <!-- Serviço do Notifee: "location" no trajeto do motorista, "dataSync" no aviso de chegada (Android 14) -->
       <service
         android:name="app.notifee.core.ForegroundService"
-        android:foregroundServiceType="location"
+        android:foregroundServiceType="location|dataSync"
         tools:replace="android:foregroundServiceType" />
     </application>
 </manifest>

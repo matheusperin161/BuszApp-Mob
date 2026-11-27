@@ -6,12 +6,13 @@
 import { Text } from 'react-native';
 
 import { tipografia } from '../../theme';
-import { criarEstilos } from '../../theme/tema';
+import { criarEstilos, escalarTexto, useTema } from '../../theme/tema';
 
 export function Label({ children, variante = 'corpo', style, ...props }) {
   const styles = useStyles();
+  const { escalaFonte } = useTema();
   return (
-    <Text style={[styles[variante], style]} {...props}>
+    <Text style={escalarTexto([styles[variante], style], escalaFonte)} {...props}>
       {children}
     </Text>
   );

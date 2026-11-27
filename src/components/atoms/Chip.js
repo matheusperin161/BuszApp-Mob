@@ -6,10 +6,11 @@
 import { Pressable, Text } from 'react-native';
 
 import { espacamentos, raios, tipografia } from '../../theme';
-import { criarEstilos } from '../../theme/tema';
+import { criarEstilos, escalarTexto, useTema } from '../../theme/tema';
 
 export function Chip({ rotulo, selecionado = false, onPress, desabilitado = false, style }) {
   const styles = useStyles();
+  const { escalaFonte } = useTema();
   return (
     <Pressable
       onPress={onPress}
@@ -23,7 +24,7 @@ export function Chip({ rotulo, selecionado = false, onPress, desabilitado = fals
         desabilitado && styles.inativo,
         style,
       ]}>
-      <Text style={[styles.texto, selecionado && styles.textoSelecionado]}>{rotulo}</Text>
+      <Text style={escalarTexto([styles.texto, selecionado && styles.textoSelecionado], escalaFonte)}>{rotulo}</Text>
     </Pressable>
   );
 }

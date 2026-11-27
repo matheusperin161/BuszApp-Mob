@@ -94,7 +94,52 @@ const escuro = {
   fundoMapa: '#0F172A',
 };
 
-export const paletas = { claro, escuro };
+/**
+ * Alto contraste (acessibilidade): textos secundários e bordas bem mais fortes,
+ * para quem enxerga pouco ou usa o celular no sol. Vale nos dois temas.
+ */
+const contrasteClaro = {
+  textoMedio: '#111827',
+  textoSecundario: '#1F2937',
+  textoFraco: '#374151',
+  primariaTexto: '#78350F',
+  link: '#78350F',
+  borda: '#92400E',
+  bordaSuave: '#B45309',
+  bordaNeutra: '#4B5563',
+  campoCinzaBorda: '#4B5563',
+  perigoTexto: '#7F1D1D',
+  sucessoTexto: '#14532D',
+  infoTexto: '#1E3A8A',
+};
+const contrasteEscuro = {
+  fundo: '#000000',
+  superficie: '#0B1120',
+  texto: '#FFFFFF',
+  textoMedio: '#F1F5F9',
+  textoSecundario: '#E2E8F0',
+  textoFraco: '#CBD5E1',
+  primariaTexto: '#FDE68A',
+  link: '#FDE68A',
+  borda: '#E2E8F0',
+  bordaSuave: '#94A3B8',
+  bordaNeutra: '#94A3B8',
+  campoCinzaBorda: '#94A3B8',
+};
+
+export const paletas = {
+  claro,
+  escuro,
+  claroContraste: { ...claro, ...contrasteClaro },
+  escuroContraste: { ...escuro, ...contrasteEscuro },
+};
+
+/** tamanhos de letra do app (além do ajuste de fonte do próprio celular) */
+export const ESCALAS_FONTE = [
+  { id: 1, rotulo: 'Normal' },
+  { id: 1.15, rotulo: 'Grande' },
+  { id: 1.3, rotulo: 'Muito grande' },
+];
 
 /**
  * Degradês (react-native-svg). angulo segue o CSS: 135 = diagonal ↘, 180 = de cima para baixo.

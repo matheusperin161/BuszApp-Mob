@@ -3,6 +3,8 @@
  * As abas moram em src/navigation/AppTabs.js. Cada tela desenha o próprio
  * cabeçalho em degradê (organism Cabecalho), igual ao topo do site.
  */
+import { useEffect } from 'react';
+import notifee, { EventType } from '@notifee/react-native';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar, StyleSheet } from 'react-native';
@@ -10,6 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ID_PILHA_RAIZ } from './src/navigation/acoes';
+import { tratarAcaoDaNotificacao } from './src/services/avisoChegada';
 import { ToastProvider } from './src/components/organisms/Toast';
 import { AppTabs } from './src/navigation/AppTabs';
 import { AcompanhamentoScreen } from './src/screens/AcompanhamentoScreen';
@@ -74,6 +77,9 @@ function Navegacao() {
 }
 
 export default function App() {
+  // botão "Cancelar aviso" da notificação com o app aberto
+  useEffect(() => notifee.onForegroundEvent(evento => tratarAcaoDaNotificacao(evento, EventType)), []);
+
   return (
     <GestureHandlerRootView style={styles.raiz}>
       <SafeAreaProvider>

@@ -8,6 +8,8 @@
  * Atualiza a cada 5 s enquanto a tela está aberta (igual ao site).
  * Layout do site: quadro de status (STATUS, ÔNIBUS, PRÓXIMA PARADA, ETA),
  * mapa, horários e a lista de paradas.
+ * Extras do app: estrela de favorita, "Avisar quando chegar" (services/avisoChegada)
+ * e horários/paradas salvos para consultar sem internet (services/offline).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
@@ -25,17 +27,14 @@ import { MapaLinha } from '../components/organisms/MapaLinha';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { irParaAba } from '../navigation/acoes';
 import { INTERVALO_RASTREIO_MS } from '../services/config';
-import {
-  listarHorarios,
-  listarLinhasRastreio,
-  paradasDaLinha,
-  posicaoDoOnibus,
-  viagensAtivas,
-} from '../services/linhas';
+import { AvisoChegadaCard } from '../components/organisms/AvisoChegadaCard';
+import { alternarFavorita, eFavorita, listarFavoritas } from '../services/favoritas';
+import { listarLinhasRastreio, posicaoDoOnibus, viagensAtivas } from '../services/linhas';
+import { horariosComCache, paradasComCache } from '../services/offline';
 import { obterPreferencias, salvarPreferencias } from '../services/preferencias';
 import { espacamentos } from '../theme';
 import { criarEstilos, useTema } from '../theme/tema';
-import { distancia, hora } from '../utils/formato';
+import { dataHora, distancia, hora } from '../utils/formato';
 
 function minutosDoDia(hhmm) {
   const [h, m] = String(hhmm).split(':').map(Number);
@@ -73,6 +72,8 @@ export function AcompanhamentoScreen({ navigation, route }) {
   const [atualizadoEm, setAtualizadoEm] = useState(null);
   const [erro, setErro] = useState(null);
   const [atualizando, setAtualizando] = useState(false);
+  const [favorita, setFavorita] = useState(false);
+  const [offlineDesde, setOfflineDesde] = useState(null);
   const montado = useRef(true);
 
   // Carga inicial: paradas, horários e preferência de atualização automática
@@ -82,12 +83,16 @@ export function AcompanhamentoScreen({ navigation, route }) {
 
     async function iniciar() {
       try {
-        const [rastreio, lista, prefs] = await Promise.all([
+        const [rastreio, doCache, prefs, favs] = await Promise.all([
           listarLinhasRastreio().catch(() => []),
-          listarHorarios(linha.numero),
+          horariosComCache(linha.numero),
           obterPreferencias(),
+          listarFavoritas(),
         ]);
         if (!montado.current) return;
+        const lista = doCache.dados;
+        setOfflineDesde(doCache.offline ? doCache.salvoEm : null);
+        setFavorita(eFavorita(favs, linha.numero));
         const daLinha = (rastreio || []).find(l => String(l.numero) === String(linha.numero));
         if (daLinha) {
           setRastreioId(daLinha.id);
@@ -96,7 +101,9 @@ export function AcompanhamentoScreen({ navigation, route }) {
           setParadas(daLinha.paradas);
         } else {
           // paradas cadastradas no painel do site (as mesmas que o motorista usa)
-          const doSite = await paradasDaLinha(linha.numero).catch(() => []);
+          const doSite = await paradasComCache(linha.numero)
+            .then(r => r.dados || [])
+            .catch(() => []);
           if (montado.current && doSite.length) setParadas(doSite);
         }
         const ordenados = [...(lista || [])].sort(
@@ -252,7 +259,30 @@ export function AcompanhamentoScreen({ navigation, route }) {
 
   return (
     <ScreenTemplate cabecalho={cabecalho}>
-      <ErrorMessage mensagem={erro} />
+      {offlineDesde ? (
+        <AvisoBox
+          tipo="alerta"
+          titulo="Sem internet"
+          mensagem={`Horários salvos em ${dataHora(offlineDesde)}. A posição dos ônibus volta quando a conexão voltar.`}
+        />
+      ) : (
+        <ErrorMessage mensagem={erro} />
+      )}
+
+      <Pressable
+        onPress={async () => {
+          const lista = await alternarFavorita(linha);
+          setFavorita(eFavorita(lista, linha.numero));
+        }}
+        accessibilityRole="button"
+        accessibilityState={{ selected: favorita }}
+        accessibilityLabel={favorita ? 'Tirar das favoritas' : 'Favoritar esta linha'}
+        style={[styles.favorita, favorita && styles.favoritaAtiva]}>
+        <Icone nome="star" preenchido={favorita} cor={favorita ? cores.primaria : cores.textoSecundario} tamanho={18} />
+        <Label style={[styles.favoritaTexto, favorita && styles.favoritaTextoAtivo]}>
+          {favorita ? 'Linha favorita' : 'Favoritar linha'}
+        </Label>
+      </Pressable>
 
       <Card style={styles.quadro}>
         <View style={styles.quadroLinha}>
@@ -352,6 +382,13 @@ export function AcompanhamentoScreen({ navigation, route }) {
       ) : null}
 
       {paradasOrdenadas.length ? (
+        <AvisoChegadaCard
+          linha={{ numero: linha.numero, nome: linha.nome, rastreioId }}
+          paradas={paradasOrdenadas}
+        />
+      ) : null}
+
+      {paradasOrdenadas.length ? (
         <Card titulo="Paradas" icone="map-pin">
           {paradasOrdenadas.map((p, i) => {
             const proximaAqui = proximaNome && p.name === proximaNome;
@@ -409,6 +446,22 @@ export function AcompanhamentoScreen({ navigation, route }) {
 
 const useStyles = criarEstilos(({ cores }) => ({
   flex: { flex: 1 },
+  favorita: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 6,
+    paddingHorizontal: espacamentos.md,
+    paddingVertical: espacamentos.sm,
+    borderRadius: 999,
+    borderWidth: 1.5,
+    borderColor: cores.bordaNeutra,
+    backgroundColor: cores.superficie,
+    marginBottom: espacamentos.md,
+  },
+  favoritaAtiva: { borderColor: cores.primaria, backgroundColor: cores.superficieAlt },
+  favoritaTexto: { fontWeight: '700', color: cores.textoMedio, fontSize: 14 },
+  favoritaTextoAtivo: { color: cores.primariaTexto },
   quadro: { paddingVertical: espacamentos.md },
   quadroLinha: { flexDirection: 'row', gap: espacamentos.md },
   quadroLinhaBaixo: {

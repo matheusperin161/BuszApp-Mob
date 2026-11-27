@@ -20,12 +20,21 @@ export function LinhaList({
   onRefresh,
   refreshing,
   onAbrir,
+  favoritas,
+  onFavoritar,
   ListHeaderComponent,
 }) {
   const espacoInferior = useEspacoInferior();
   const renderItem = useCallback(
-    ({ item }) => <LinhaItem linha={item} onPress={onAbrir} />,
-    [onAbrir],
+    ({ item }) => (
+      <LinhaItem
+        linha={item}
+        onPress={onAbrir}
+        favorita={favoritas?.has(String(item.numero))}
+        onFavoritar={onFavoritar}
+      />
+    ),
+    [onAbrir, favoritas, onFavoritar],
   );
 
   const semDados = !linhas || linhas.length === 0;
@@ -38,6 +47,7 @@ export function LinhaList({
   return (
     <FlatList
       data={linhas}
+      extraData={favoritas}
       keyExtractor={extrairChave}
       renderItem={renderItem}
       ListHeaderComponent={ListHeaderComponent}

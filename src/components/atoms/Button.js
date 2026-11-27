@@ -16,7 +16,7 @@
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { espacamentos, raios, tipografia } from '../../theme';
-import { criarEstilos, useTema } from '../../theme/tema';
+import { criarEstilos, escalarTexto, useTema } from '../../theme/tema';
 import { Gradiente } from './Gradiente';
 import { Icone } from './Icone';
 
@@ -46,7 +46,7 @@ export function Button({
   textoStyle,
 }) {
   const styles = useStyles();
-  const { cores, gradientes } = useTema();
+  const { cores, gradientes, escalaFonte } = useTema();
   const inativo = desabilitado || carregando;
   const degrade = DEGRADE[variante] ? gradientes[DEGRADE[variante]] : null;
   const corTexto = COR_TEXTO[variante] ? cores[COR_TEXTO[variante]] : cores.textoInverso;
@@ -72,7 +72,7 @@ export function Button({
       ) : (
         <View style={styles.linha}>
           {icone ? <Icone nome={icone} cor={corTexto} tamanho={19} /> : null}
-          <Text style={[styles.texto, { color: corTexto }, textoStyle]}>{title}</Text>
+          <Text style={escalarTexto([styles.texto, { color: corTexto }, textoStyle], escalaFonte)}>{title}</Text>
         </View>
       )}
     </Pressable>

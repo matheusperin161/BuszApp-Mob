@@ -13,6 +13,8 @@ export const PREFS_PADRAO = {
   atualizacaoAutomatica: true,
   // número da linha aberta por último — atalho na tela inicial
   ultimaLinha: null,
+  // linhas marcadas com estrela: [{ numero, nome }] (aparecem primeiro e na tela inicial)
+  favoritas: [],
 };
 
 export async function obterPreferencias() {

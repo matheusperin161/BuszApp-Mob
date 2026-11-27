@@ -2,6 +2,7 @@
  * MOLECULE — LinhaItem
  * Card de uma linha, igual à lista "Linhas Disponíveis" do site:
  * círculo colorido com o número, nome, "Centro → Efapi" e a setinha âmbar.
+ * Com onFavoritar, mostra a estrela (cheia quando a linha é favorita).
  */
 import { memo } from 'react';
 import { Pressable, View } from 'react-native';
@@ -22,7 +23,7 @@ export function corDaLinha(numero) {
   return CORES_LINHA[soma % CORES_LINHA.length];
 }
 
-export const LinhaItem = memo(function LinhaItem({ linha, onPress }) {
+export const LinhaItem = memo(function LinhaItem({ linha, onPress, favorita = false, onFavoritar }) {
   const styles = useStyles();
   const { cores } = useTema();
   return (
@@ -53,6 +54,17 @@ export const LinhaItem = memo(function LinhaItem({ linha, onPress }) {
           </Label>
         ) : null}
       </View>
+      {onFavoritar ? (
+        <Pressable
+          onPress={() => onFavoritar(linha)}
+          hitSlop={10}
+          accessibilityRole="button"
+          accessibilityState={{ selected: favorita }}
+          accessibilityLabel={favorita ? `Tirar linha ${linha.numero} das favoritas` : `Favoritar linha ${linha.numero}`}
+          style={styles.estrela}>
+          <Icone nome="star" cor={favorita ? cores.primaria : cores.textoFraco} preenchido={favorita} tamanho={22} />
+        </Pressable>
+      ) : null}
       <Icone nome="chevron-right" cor={cores.primaria} tamanho={22} />
     </Pressable>
   );
@@ -71,6 +83,7 @@ const useStyles = criarEstilos(({ cores, sombra }) => ({
     ...sombra,
   },
   pressionado: { opacity: 0.85 },
+  estrela: { padding: 4 },
   numero: {
     width: 44,
     height: 44,
