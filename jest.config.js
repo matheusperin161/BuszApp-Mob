@@ -8,6 +8,6 @@ module.exports = {
     'node_modules/(?!((jest-)?react-native[^/]*|@react-native(-community)?' +
       '|@react-navigation|react-native-screens|react-native-safe-area-context' +
       '|react-native-gesture-handler|react-native-webview|react-native-keychain' +
-      '|react-native-image-picker|@notifee|@react-native-async-storage)/)',
+      '|react-native-image-picker|@notifee|@react-native-async-storage|react-native-camera-kit|react-native-qrcode-svg)/)',
   ],
 };

@@ -1,10 +1,10 @@
 /**
  * ORGANISM — OcorrenciaForm
- * Tipo da ocorrência (grade de 4 blocos com ícone) + descrição.
- * Os passageiros recebem um aviso.
+ * Tipo da ocorrência (grade de 4 blocos com ícone) + descrição + foto opcional.
+ * Os passageiros recebem um aviso; o admin vê a foto e o local no mapa.
  */
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
 
 import { Button } from '../atoms/Button';
 import { Label } from '../atoms/Label';
@@ -13,6 +13,7 @@ import { ErrorMessage } from '../molecules/ErrorMessage';
 import { IconeCaixa } from '../molecules/IconeCaixa';
 import { TextAreaField } from '../molecules/TextAreaField';
 import { TIPOS_OCORRENCIA } from '../../services/motorista';
+import { capturarFoto, escolherImagem } from '../../services/nativos';
 import { espacamentos, raios } from '../../theme';
 import { criarEstilos, useTema } from '../../theme/tema';
 import { LIMITES } from '../../utils/validacao';
@@ -23,6 +24,18 @@ export function OcorrenciaForm({ onSubmit, carregando = false, erro = null }) {
   const [tipo, setTipo] = useState(null);
   const [descricao, setDescricao] = useState('');
   const [tentou, setTentou] = useState(false);
+  const [foto, setFoto] = useState(null);
+  const [erroFoto, setErroFoto] = useState(null);
+
+  async function pegarFoto(origem) {
+    setErroFoto(null);
+    try {
+      const escolhida = origem === 'camera' ? await capturarFoto({ traseira: true }) : await escolherImagem();
+      if (escolhida) setFoto(escolhida);
+    } catch (e) {
+      setErroFoto(e.message);
+    }
+  }
 
   const erros = {
     tipo: tipo ? null : 'Escolha o tipo.',
@@ -32,7 +45,7 @@ export function OcorrenciaForm({ onSubmit, carregando = false, erro = null }) {
   function enviar() {
     setTentou(true);
     if (erros.tipo || erros.descricao || carregando) return;
-    onSubmit({ tipo, descricao: descricao.trim() });
+    onSubmit({ tipo, descricao: descricao.trim(), foto: foto?.uri ?? null });
   }
 
   return (
@@ -76,6 +89,23 @@ export function OcorrenciaForm({ onSubmit, carregando = false, erro = null }) {
           mensagemErro={tentou ? erros.descricao : null}
         />
       </Card>
+      <Card titulo="Foto (opcional)" icone="camera">
+        {foto ? (
+          <View>
+            <Image source={{ uri: foto.uri }} style={styles.foto} accessibilityLabel="Foto da ocorrência" />
+            <Button title="Tirar outra" icone="x" variante="secundario" onPress={() => setFoto(null)} style={styles.semMargem} />
+          </View>
+        ) : (
+          <View style={styles.botoesFoto}>
+            <Button title="Câmera" icone="camera" variante="secundario" onPress={() => pegarFoto('camera')} style={styles.botaoFoto} />
+            <Button title="Galeria" icone="layout" variante="secundario" onPress={() => pegarFoto('galeria')} style={styles.botaoFoto} />
+          </View>
+        )}
+        <ErrorMessage mensagem={erroFoto} />
+        <Label variante="legenda" style={styles.legendaFoto}>
+          O local é enviado junto, pelo GPS. A foto ajuda o administrador a entender o problema.
+        </Label>
+      </Card>
       <Button title="Avisar passageiros" icone="send" onPress={enviar} carregando={carregando} />
     </View>
   );
@@ -98,4 +128,9 @@ const useStyles = criarEstilos(({ cores }) => ({
   opcaoTexto: { fontWeight: '600', color: cores.textoMedio },
   opcaoTextoAtivo: { color: cores.primariaTexto },
   erro: { color: cores.perigo, marginTop: espacamentos.sm },
+  foto: { width: '100%', height: 200, borderRadius: raios.lg, marginBottom: espacamentos.sm, backgroundColor: cores.cinzaClaro },
+  botoesFoto: { flexDirection: 'row', gap: espacamentos.sm },
+  botaoFoto: { flex: 1, marginBottom: 0 },
+  semMargem: { marginBottom: 0 },
+  legendaFoto: { marginTop: espacamentos.sm },
 }));

@@ -10,7 +10,9 @@ import { Card } from '../components/molecules/Card';
 import { IconeCaixa } from '../components/molecules/IconeCaixa';
 import { OcorrenciaForm } from '../components/organisms/OcorrenciaForm';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
-import { registrarOcorrencia } from '../services/motorista';
+import { enviarFotoOcorrencia, registrarOcorrencia } from '../services/motorista';
+import { obterPosicao } from '../services/nativos';
+import { estadoAtual } from '../services/rastreio';
 import { espacamentos } from '../theme';
 import { criarEstilos, useTema } from '../theme/tema';
 
@@ -30,11 +32,20 @@ export function OcorrenciaScreen({ navigation, route }) {
     voltar: true,
   };
 
-  async function handleEnviar({ tipo, descricao }) {
+  const [avisoFoto, setAvisoFoto] = useState(null);
+
+  async function handleEnviar({ tipo, descricao, foto }) {
     setCarregando(true);
     setErro(null);
     try {
-      await registrarOcorrencia({ tipo, descricao, trajeto });
+      // local: a última posição do trajeto ou, se não tiver, o GPS agora
+      const posicao = estadoAtual().ultima ?? (await obterPosicao().catch(() => null));
+      const resposta = await registrarOcorrencia({ tipo, descricao, trajeto, posicao });
+      if (foto && resposta?.incident?.id) {
+        await enviarFotoOcorrencia(resposta.incident.id, foto).catch(e =>
+          setAvisoFoto(`A ocorrência foi registrada, mas a foto não subiu: ${e.message}`),
+        );
+      }
       setEnviado(true);
     } catch (e) {
       setErro(e.message);
@@ -56,6 +67,11 @@ export function OcorrenciaScreen({ navigation, route }) {
           <Label style={styles.texto}>
             A ocorrência foi registrada e aparece nos avisos do app e do site.
           </Label>
+          {avisoFoto ? (
+            <Label variante="legenda" style={styles.texto}>
+              {avisoFoto}
+            </Label>
+          ) : null}
         </Card>
       </ScreenTemplate>
     );

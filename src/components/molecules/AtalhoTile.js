@@ -18,7 +18,7 @@ export function AtalhoTile({ icone, rotulo, onPress, badge }) {
       accessibilityLabel={rotulo}
       style={({ pressed }) => [styles.tile, pressed && styles.pressionado]}>
       <IconeCaixa nome={icone} degrade tamanho={50} />
-      <Label style={styles.rotulo} numberOfLines={1}>
+      <Label style={styles.rotulo} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
         {rotulo}
       </Label>
       {badge ? (

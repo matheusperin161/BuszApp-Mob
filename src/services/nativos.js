@@ -19,7 +19,7 @@ function rotuloAndroid(concedida) {
   return concedida ? 'granted' : 'denied';
 }
 
-async function pedirCameraAndroid() {
+export async function pedirCameraAndroid(motivo = 'O BusZapp usa a câmera para a foto do seu perfil.') {
   if (Platform.OS !== 'android') {
     return true;
   }
@@ -27,7 +27,7 @@ async function pedirCameraAndroid() {
     PermissionsAndroid.PERMISSIONS.CAMERA,
     {
       title: 'Câmera',
-      message: 'O BusZapp usa a câmera para a foto do seu perfil.',
+      message: motivo,
       buttonPositive: 'Permitir',
       buttonNegative: 'Negar',
     },
@@ -56,7 +56,7 @@ async function pedirGpsAndroid() {
   return granted === PermissionsAndroid.RESULTS.GRANTED;
 }
 
-export async function capturarFoto() {
+export async function capturarFoto({ traseira = false } = {}) {
   const ok = await pedirCameraAndroid();
   if (!ok) {
     throw new Error('Permissão da câmera negada.');
@@ -64,7 +64,7 @@ export async function capturarFoto() {
   const response = await launchCamera({
     mediaType: 'photo',
     quality: 0.6,
-    cameraType: 'front',
+    cameraType: traseira ? 'back' : 'front',
   });
   if (response.didCancel) {
     return null;

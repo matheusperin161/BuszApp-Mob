@@ -1,6 +1,7 @@
 /**
  * Recurso REST do cartão de transporte (mesmas rotas da tela Recarga do site)
  * GET /balance | GET /card/info | POST /card/register | POST /recharge | GET /transactions
+ * GET /card/qr → QR Code de embarque (assinado, vale 3 min, uso único)
  */
 import { apiRequest } from './api';
 
@@ -29,4 +30,9 @@ export function recarregar(valor, formaPagamento) {
 
 export function listarTransacoes() {
   return apiRequest('/transactions');
+}
+
+/** { token, expira_em, validade_s, saldo } */
+export function gerarQrEmbarque() {
+  return apiRequest('/card/qr');
 }

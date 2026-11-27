@@ -31,6 +31,11 @@ import { RecargaScreen } from './src/screens/RecargaScreen';
 import { RegisterScreen } from './src/screens/RegisterScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { VerificarEmailScreen } from './src/screens/VerificarEmailScreen';
+import { AdminEscalaFormScreen } from './src/screens/AdminEscalaFormScreen';
+import { AdminEscalasScreen } from './src/screens/AdminEscalasScreen';
+import { AdminEstatisticasScreen } from './src/screens/AdminEstatisticasScreen';
+import { EmbarqueScreen } from './src/screens/EmbarqueScreen';
+import { MeuQrScreen } from './src/screens/MeuQrScreen';
 import { TemaProvider, useTema } from './src/theme/tema';
 
 const Stack = createNativeStackNavigator();
@@ -65,12 +70,17 @@ function Navegacao() {
         <Stack.Screen name="Avisos" component={NotificacoesScreen} />
         <Stack.Screen name="Config" component={SettingsScreen} />
         <Stack.Screen name="Ocorrencia" component={OcorrenciaScreen} />
+        <Stack.Screen name="MeuQr" component={MeuQrScreen} />
+        <Stack.Screen name="Embarque" component={EmbarqueScreen} />
         {/* cadastros do administrador */}
         <Stack.Screen name="AdminMotorista" component={AdminMotoristaFormScreen} />
         <Stack.Screen name="AdminVeiculo" component={AdminVeiculoFormScreen} />
         <Stack.Screen name="AdminLinhaNova" component={AdminLinhaFormScreen} />
         <Stack.Screen name="AdminParadas" component={AdminParadasScreen} />
         <Stack.Screen name="AdminParada" component={AdminParadaFormScreen} />
+        <Stack.Screen name="AdminEstatisticas" component={AdminEstatisticasScreen} />
+        <Stack.Screen name="AdminEscalas" component={AdminEscalasScreen} />
+        <Stack.Screen name="AdminEscala" component={AdminEscalaFormScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

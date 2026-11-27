@@ -15,6 +15,10 @@
  *   POST            /admin/routes                        nova linha (+ origem/destino como paradas)
  *   GET/POST/PUT/DELETE /admin/routes/:id/stops[/:sid]   paradas da linha
  * Todas exigem sessão de admin no backend (403 para os outros perfis).
+ * Versão 2:
+ *   GET  /incidents?status=aberto     ocorrências (foto e local) · POST /incidents/:id/resolve
+ *   GET  /admin/estatisticas?dias=    dados dos gráficos
+ *   GET/POST/PUT/DELETE /admin/escalas  escala dos motoristas
  */
 import { apiRequest } from './api';
 
@@ -160,3 +164,36 @@ export const STATUS_VEICULO = [
 ];
 
 export const CATEGORIAS_CNH = ['A', 'B', 'C', 'D', 'E', 'AB', 'AC', 'AD', 'AE'];
+
+/* ---------------------------------------------------------- versão 2 */
+
+/** ocorrências dos motoristas (com foto e local); status 'aberto' | 'resolvido' | undefined */
+export async function ocorrencias(status = 'aberto') {
+  return (await apiRequest(`/incidents${status ? `?status=${status}` : ''}`)) || [];
+}
+
+export function resolverOcorrencia(id) {
+  return apiRequest(`/incidents/${id}/resolve`, { method: 'POST' });
+}
+
+/** recargas por dia, viagens por linha e avaliações por semana */
+export function estatisticas(dias = 30) {
+  return apiRequest(`/admin/estatisticas?dias=${dias}`);
+}
+
+/** escalas entre duas datas ISO (AAAA-MM-DD) */
+export async function escalas(de, ate) {
+  return (await apiRequest(`/admin/escalas?de=${de}&ate=${ate}`)) || [];
+}
+
+export async function salvarEscala(id, dados) {
+  const data = await apiRequest(id ? `/admin/escalas/${id}` : '/admin/escalas', {
+    method: id ? 'PUT' : 'POST',
+    body: dados,
+  });
+  return data?.escala;
+}
+
+export function excluirEscala(id) {
+  return apiRequest(`/admin/escalas/${id}`, { method: 'DELETE' });
+}

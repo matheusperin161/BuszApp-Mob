@@ -23,6 +23,7 @@ import { Card } from '../components/molecules/Card';
 import { ChipGrupo } from '../components/molecules/ChipGrupo';
 import { ErrorMessage } from '../components/molecules/ErrorMessage';
 import { InfoLinha } from '../components/molecules/InfoLinha';
+import { Selo } from '../components/molecules/Selo';
 import { MapaLinha } from '../components/organisms/MapaLinha';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { irParaAba } from '../navigation/acoes';
@@ -48,6 +49,13 @@ function proximoHorario(horarios) {
   const atual = agora.getHours() * 60 + agora.getMinutes();
   return horarios.find(h => minutosDoDia(h.departure_time) >= atual - 30) ?? horarios[0];
 }
+
+// lotação informada pelo motorista (POST /auth/driver/trip/lotacao)
+const SELO_LOTACAO = {
+  vazio: { texto: 'Vazio · lugares sobrando', tipo: 'verde', icone: 'smile' },
+  cheio: { texto: 'Cheio · só em pé', tipo: 'ambar', icone: 'users' },
+  lotado: { texto: 'Lotado', tipo: 'vermelho', icone: 'alert-circle' },
+};
 
 function textoEta(minutos) {
   if (minutos == null) return '—';
@@ -322,6 +330,14 @@ export function AcompanhamentoScreen({ navigation, route }) {
             <Label style={[styles.quadroValor, aoVivo && styles.eta]}>{eta}</Label>
           </View>
         </View>
+        {legado?.trip_active && SELO_LOTACAO[legado.lotacao] ? (
+          <View style={[styles.quadroLinha, styles.quadroLinhaBaixo, styles.lotacao]}>
+            <Label variante="secao" style={styles.quadroRotulo}>
+              Lotação
+            </Label>
+            <Selo {...SELO_LOTACAO[legado.lotacao]} />
+          </View>
+        ) : null}
       </Card>
 
       <MapaLinha
@@ -471,6 +487,7 @@ const useStyles = criarEstilos(({ cores }) => ({
     borderTopColor: cores.cinzaClaro,
   },
   quadroItem: { flex: 1 },
+  lotacao: { alignItems: 'center', justifyContent: 'space-between' },
   quadroRotulo: { fontSize: 11, letterSpacing: 1.2, marginBottom: 4 },
   quadroValor: { fontSize: 16, fontWeight: '700', color: cores.texto },
   eta: { color: cores.sucesso },

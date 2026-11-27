@@ -7,7 +7,11 @@
  *   POST /auth/driver/trip/start       abre o trajeto do horário escolhido
  *   POST /update_location              posição do ônibus (bus_id do horário)
  *   POST /auth/driver/trip/stop        encerra (o ônibus sai do mapa)
- *   POST /incidents                    ocorrência para os passageiros
+ *   POST /incidents                    ocorrência para os passageiros (com local)
+ *   POST /incidents/:id/photo          foto da ocorrência
+ *   POST /auth/driver/trip/lotacao     lotação do ônibus (vazio | cheio | lotado)
+ *   GET  /auth/driver/escala           escala do motorista (próximos 7 dias)
+ *   POST /embarque                     cobra a passagem pelo QR Code do passageiro
  *
  * O acompanhamento (site e app) consulta /bus_location/:bus_id do horário:
  * mostra "iniciado" pelo trajeto aberto e "onde está" pela última posição.
@@ -88,7 +92,7 @@ export const TIPOS_OCORRENCIA = [
   { id: 'outro', rotulo: 'Outro', icone: 'more-horizontal' },
 ];
 
-export function registrarOcorrencia({ tipo, descricao, trajeto }) {
+export function registrarOcorrencia({ tipo, descricao, trajeto, posicao }) {
   return apiRequest('/incidents', {
     method: 'POST',
     body: {
@@ -99,6 +103,38 @@ export function registrarOcorrencia({ tipo, descricao, trajeto }) {
       route_number: trajeto?.linha?.numero,
       route_name: trajeto?.linha?.nome,
       schedule_time: trajeto?.horario?.departure_time,
+      latitude: posicao?.latitude,
+      longitude: posicao?.longitude,
     },
   });
+}
+
+export function enviarFotoOcorrencia(id, uri) {
+  const extensao = (uri.split('.').pop() || 'jpg').toLowerCase();
+  const form = new FormData();
+  form.append('photo', {
+    uri,
+    name: `ocorrencia.${extensao === 'png' ? 'png' : 'jpg'}`,
+    type: extensao === 'png' ? 'image/png' : 'image/jpeg',
+  });
+  return apiRequest(`/incidents/${id}/photo`, { method: 'POST', form, timeoutMs: 30000 });
+}
+
+export const LOTACOES = [
+  { id: 'vazio', rotulo: 'Vazio', descricao: 'Lugares sobrando', cor: 'sucesso' },
+  { id: 'cheio', rotulo: 'Cheio', descricao: 'Só em pé', cor: 'primaria' },
+  { id: 'lotado', rotulo: 'Lotado', descricao: 'Sem espaço', cor: 'perigo' },
+];
+
+export function informarLotacao(lotacao) {
+  return apiRequest('/auth/driver/trip/lotacao', { method: 'POST', body: { lotacao } });
+}
+
+export async function minhaEscala(dias = 7) {
+  return (await apiRequest(`/auth/driver/escala?dias=${dias}`)) || [];
+}
+
+/** cobra a passagem do QR lido; devolve { passageiro, valor, saldo } */
+export function cobrarPorQr(token) {
+  return apiRequest('/embarque', { method: 'POST', body: { token } });
 }

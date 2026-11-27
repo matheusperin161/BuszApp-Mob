@@ -7,6 +7,7 @@ import { useCallback, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { Button } from '../components/atoms/Button';
 import { Icone } from '../components/atoms/Icone';
 import { Label } from '../components/atoms/Label';
 import { AvisoBox } from '../components/molecules/AvisoBox';
@@ -90,6 +91,13 @@ export function CartaoScreen({ navigation, route }) {
           onPress={() => navigation.navigate('Recarga')}
         />
       </View>
+      <Button
+        title="Embarcar com QR Code"
+        icone="hash"
+        onPress={() => navigation.navigate('MeuQr')}
+        desabilitado={!temCartao}
+        style={styles.qr}
+      />
 
       <Pressable
         onPress={() => navigation.navigate('Extrato')}
@@ -114,7 +122,8 @@ export function CartaoScreen({ navigation, route }) {
 }
 
 const useStyles = criarEstilos(({ cores, sombra }) => ({
-  opcoes: { flexDirection: 'row', gap: espacamentos.md, marginBottom: espacamentos.lg },
+  opcoes: { flexDirection: 'row', gap: espacamentos.md, marginBottom: espacamentos.md },
+  qr: { marginBottom: espacamentos.lg },
   ultima: {
     flexDirection: 'row',
     alignItems: 'center',

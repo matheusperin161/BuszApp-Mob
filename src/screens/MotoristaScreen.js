@@ -25,6 +25,8 @@ import { Selo } from '../components/molecules/Selo';
 import { Cabecalho } from '../components/organisms/Cabecalho';
 import { MapaLinha } from '../components/organisms/MapaLinha';
 import { TrajetoForm } from '../components/organisms/TrajetoForm';
+import { EscalaCard } from '../components/organisms/EscalaCard';
+import { LotacaoSeletor } from '../components/organisms/LotacaoSeletor';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { voltarAoLogin } from '../navigation/acoes';
 import { listarHorarios, paradasDaLinha } from '../services/linhas';
@@ -353,6 +355,7 @@ export function MotoristaScreen({ navigation }) {
           carregando={acao === 'iniciar'}
           erro={erro}
         />
+        <EscalaCard />
         {cartaoRegistro}
       </ScreenTemplate>
     );
@@ -393,6 +396,15 @@ export function MotoristaScreen({ navigation }) {
           </View>
         </View>
       </Card>
+
+      <LotacaoSeletor />
+
+      <Button
+        title="Cobrar passagem (QR Code)"
+        icone="credit-card"
+        onPress={() => navigation.navigate('Embarque')}
+        style={styles.cobrar}
+      />
 
       <AvisoBox
         tipo="info"
@@ -463,6 +475,7 @@ const useStyles = criarEstilos(({ cores }) => ({
   },
   precisaoValor: { fontWeight: '700' },
   mapa: { marginBottom: espacamentos.md },
+  cobrar: { marginBottom: espacamentos.md },
   botoes: { gap: espacamentos.sm, marginBottom: espacamentos.md },
   botaoAviso: { marginTop: espacamentos.sm, minHeight: 44 },
   registro: {

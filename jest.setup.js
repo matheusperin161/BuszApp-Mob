@@ -43,3 +43,13 @@ jest.mock('react-native-webview', () => {
   const { View } = require('react-native');
   return { WebView: View };
 });
+
+jest.mock('react-native-camera-kit', () => {
+  const { View } = require('react-native');
+  return { Camera: View, CameraType: { Back: 'back', Front: 'front' } };
+});
+
+jest.mock('react-native-qrcode-svg', () => {
+  const { View } = require('react-native');
+  return View;
+});

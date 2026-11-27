@@ -134,3 +134,41 @@ export function dataIsoParaBr(iso) {
 export function mascaraPlaca(texto) {
   return String(texto ?? '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 8);
 }
+
+const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+/** "2026-11-27" → "Hoje" · "Amanhã" · "Sex 27/11" (no fuso do aparelho) */
+export function rotuloDoDia(iso, agora = new Date()) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso ?? ''));
+  if (!m) return '—';
+  const dia = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+  const diff = Math.round((dia - hoje) / 86400000);
+  if (diff === 0) return 'Hoje';
+  if (diff === 1) return 'Amanhã';
+  return `${DIAS_SEMANA[dia.getDay()]} ${m[3]}/${m[2]}`;
+}
+
+/** data no fuso do aparelho → "AAAA-MM-DD" */
+export function isoLocal(data) {
+  const d = data instanceof Date ? data : new Date(data);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** soma dias a uma data ISO ("2026-11-30", 2 → "2026-12-02") */
+export function somarDias(iso, dias) {
+  const [a, m, d] = iso.split('-').map(Number);
+  return isoLocal(new Date(a, m - 1, d + dias));
+}
+
+/** máscara de hora: "0630" → "06:30" */
+export function mascaraHora(texto) {
+  const d = somenteDigitos(texto).slice(0, 4);
+  return d.length <= 2 ? d : `${d.slice(0, 2)}:${d.slice(2)}`;
+}
+
+/** "06:30" válido (00:00 a 23:59) */
+export function horaValida(texto) {
+  const m = /^(\d{2}):(\d{2})$/.exec(String(texto ?? ''));
+  return Boolean(m) && Number(m[1]) < 24 && Number(m[2]) < 60;
+}

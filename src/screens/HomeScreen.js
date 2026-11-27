@@ -135,6 +135,7 @@ export function HomeScreen({ navigation }) {
         <AtalhoTile icone="credit-card" rotulo="Cartão" onPress={() => navigation.navigate('Cartao')} />
         <AtalhoTile icone="map-pin" rotulo="Rastrear" onPress={() => navigation.navigate('Mapa')} />
         <AtalhoTile icone="star" rotulo="Avaliar" onPress={() => navigation.navigate('Avaliar')} />
+        <AtalhoTile icone="hash" rotulo="QR Code" onPress={() => navigation.navigate('MeuQr')} />
       </View>
 
       {favoritas.length ? (

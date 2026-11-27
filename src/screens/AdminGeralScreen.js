@@ -8,7 +8,7 @@ import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Label } from '../components/atoms/Label';
-import { AvisoBox } from '../components/molecules/AvisoBox';
+import { MenuButton } from '../components/molecules/MenuButton';
 import { Card } from '../components/molecules/Card';
 import { ErrorMessage } from '../components/molecules/ErrorMessage';
 import { StatCard } from '../components/molecules/StatCard';
@@ -196,10 +196,26 @@ export function AdminGeralScreen({ navigation }) {
         </View>
       </Card>
 
-      <AvisoBox
-        tipo="info"
-        mensagem="Para cadastrar ou editar motoristas, veículos, linhas e paradas, use o painel do administrador no site."
-      />
+      <Card titulo="Gestão" icone="settings">
+        <MenuButton
+          icone="bar-chart-2"
+          titulo="Gráficos"
+          descricao="Recargas por dia, viagens por linha e avaliações"
+          onPress={() => navigation.navigate('AdminEstatisticas')}
+        />
+        <MenuButton
+          icone="calendar"
+          titulo="Escala dos motoristas"
+          descricao="Quem trabalha em cada dia, linha e horário"
+          onPress={() => navigation.navigate('AdminEscalas')}
+        />
+        <MenuButton
+          icone="user-plus"
+          titulo="Cadastros"
+          descricao="Motoristas, veículos, linhas e paradas"
+          onPress={() => navigation.navigate('Cadastros')}
+        />
+      </Card>
     </ScreenTemplate>
   );
 }

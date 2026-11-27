@@ -36,6 +36,11 @@ function montarHtml(escuro) {
                 box-shadow: 0 3px 8px rgba(0,0,0,.35); }
   .onibus.destaque div { width: 40px; height: 40px; }
   .leaflet-tooltip { font: 600 12px -apple-system, Roboto, sans-serif; }
+  .alerta div { width: 30px; height: 30px; border-radius: 50%; background: #DC2626;
+                border: 3px solid #fff; box-sizing: border-box; color: #fff;
+                display: flex; align-items: center; justify-content: center;
+                font: 900 16px -apple-system, Roboto, sans-serif;
+                box-shadow: 0 3px 8px rgba(0,0,0,.35); }
 </style>
 </head><body>
 <div id="mapa"></div>
@@ -51,6 +56,7 @@ function montarHtml(escuro) {
   var CAMINHAO = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>';
   var camadaParadas = L.layerGroup().addTo(mapa);
   var camadaOnibus = L.layerGroup().addTo(mapa);
+  var camadaAlertas = L.layerGroup().addTo(mapa);
   var assinaturaParadas = null;
 
   window.atualizar = function (d) {
@@ -82,10 +88,20 @@ function montarHtml(escuro) {
         .bindTooltip(o.titulo, { permanent: !!o.destaque, direction: 'top', offset: [0, -14] })
         .addTo(camadaOnibus);
     });
+    // ocorrências abertas (mapa do admin)
+    camadaAlertas.clearLayers();
+    (d.alertas || []).forEach(function (a) {
+      var icone = L.divIcon({ className: 'alerta', html: '<div>!</div>', iconSize: [30, 30], iconAnchor: [15, 15] });
+      L.marker([a.latitude, a.longitude], { icon: icone })
+        .bindTooltip(a.titulo, { direction: 'top', offset: [0, -12] })
+        .addTo(camadaAlertas);
+    });
+
     var semParadas = !(d.paradas || []).length;
-    if (d.enquadrar && semParadas && (d.onibus || []).length && !window.jaEnquadrou) {
+    var pontosVivos = (d.onibus || []).concat(d.alertas || []);
+    if (d.enquadrar && semParadas && pontosVivos.length && !window.jaEnquadrou) {
       window.jaEnquadrou = true;
-      var pts = d.onibus.map(function (o) { return [o.latitude, o.longitude]; });
+      var pts = pontosVivos.map(function (o) { return [o.latitude, o.longitude]; });
       if (pts.length === 1) { mapa.setView(pts[0], 15); } else { mapa.fitBounds(pts, { padding: [40, 40] }); }
     }
     if (d.seguir) {
@@ -98,7 +114,16 @@ function montarHtml(escuro) {
 </body></html>`;
 }
 
-export function MapaLinha({ paradas = [], onibus = [], seguir = null, altura = 320, aviso, style, enquadrar = false }) {
+export function MapaLinha({
+  paradas = [],
+  onibus = [],
+  alertas = [],
+  seguir = null,
+  altura = 320,
+  aviso,
+  style,
+  enquadrar = false,
+}) {
   const styles = useStyles();
   const { cores, escuro } = useTema();
   const ref = useRef(null);
@@ -118,10 +143,11 @@ export function MapaLinha({ paradas = [], onibus = [], seguir = null, altura = 3
           .sort((a, b) => a.order - b.order)
           .map(p => ({ latitude: p.latitude, longitude: p.longitude, name: p.name })),
         onibus,
+        alertas,
         seguir,
         enquadrar,
       }),
-    [paradas, onibus, seguir, enquadrar],
+    [paradas, onibus, alertas, seguir, enquadrar],
   );
 
   useEffect(() => {
