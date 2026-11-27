@@ -80,3 +80,57 @@ export function distancia(metros) {
   if (!Number.isFinite(metros)) return '—';
   return metros >= 1000 ? `${(metros / 1000).toFixed(1).replace('.', ',')} km` : `${Math.round(metros)} m`;
 }
+
+/** só os dígitos de um texto ("123.456.789-09" → "12345678909") */
+export function somenteDigitos(texto) {
+  return String(texto ?? '').replace(/\D/g, '');
+}
+
+/** máscara de CPF enquanto digita: 000.000.000-00 */
+export function mascaraCpf(texto) {
+  const d = somenteDigitos(texto).slice(0, 11);
+  return d
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+
+/** máscara de telefone: (49) 99999-9999 */
+export function mascaraTelefone(texto) {
+  const d = somenteDigitos(texto).slice(0, 11);
+  if (d.length <= 2) return d.length ? `(${d}` : '';
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
+/** máscara de data: DD/MM/AAAA */
+export function mascaraData(texto) {
+  const d = somenteDigitos(texto).slice(0, 8);
+  if (d.length <= 2) return d;
+  if (d.length <= 4) return `${d.slice(0, 2)}/${d.slice(2)}`;
+  return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`;
+}
+
+/** "31/12/2027" → "2027-12-31" (null se a data não existir) */
+export function dataBrParaIso(texto) {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(texto ?? '').trim());
+  if (!m) return null;
+  const [, dia, mes, ano] = m;
+  const d = new Date(Number(ano), Number(mes) - 1, Number(dia));
+  if (d.getFullYear() !== Number(ano) || d.getMonth() !== Number(mes) - 1 || d.getDate() !== Number(dia)) {
+    return null;
+  }
+  return `${ano}-${mes}-${dia}`;
+}
+
+/** "2027-12-31" → "31/12/2027" */
+export function dataIsoParaBr(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso ?? ''));
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : '';
+}
+
+/** placa em maiúsculas, sem espaços: "abc1d23" → "ABC1D23" */
+export function mascaraPlaca(texto) {
+  return String(texto ?? '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 8);
+}

@@ -136,3 +136,31 @@ export function forcaSenha(senha) {
   if ((/[a-z]/.test(s) && /[A-Z]/.test(s)) || /[^a-zA-Z0-9]/.test(s)) pontos += 1;
   return pontos;
 }
+
+/** CPF com os dígitos verificadores certos (mesma regra do backend) */
+export function cpfValido(valor) {
+  const d = String(valor ?? '').replace(/\D/g, '');
+  if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
+  const digito = n => {
+    let soma = 0;
+    for (let i = 0; i < n; i += 1) soma += Number(d[i]) * (n + 1 - i);
+    const resto = (soma * 10) % 11;
+    return resto === 10 ? 0 : resto;
+  };
+  return digito(9) === Number(d[9]) && digito(10) === Number(d[10]);
+}
+
+/** campo obrigatório simples */
+export function obrigatorio(valor, rotulo) {
+  return String(valor ?? '').trim() ? null : `Informe ${rotulo}.`;
+}
+
+/** inteiro dentro de [min, max] */
+export function validarInteiro(valor, { rotulo, min, max }) {
+  const texto = String(valor ?? '').trim();
+  if (!texto) return `Informe ${rotulo}.`;
+  const n = Number(texto);
+  if (!Number.isInteger(n)) return `${rotulo[0].toUpperCase()}${rotulo.slice(1)} deve ser um número inteiro.`;
+  if (n < min || n > max) return `Use um valor entre ${min} e ${max}.`;
+  return null;
+}

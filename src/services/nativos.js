@@ -120,11 +120,7 @@ export function obterPosicao() {
 }
 
 /**
- * GPS contínuo para o motorista durante a viagem.
- * Retorna a função que para de observar (chame ao sair da tela / finalizar).
- */
-/**
- * Observa o GPS. segundoPlano=true (motorista em trajeto):
+ * Observa o GPS e devolve a função que para de observar. segundoPlano=true (motorista em trajeto):
  *   iOS     → pede "Sempre" e liga as atualizações em segundo plano
  *             (Info.plist tem UIBackgroundModes = location)
  *   Android → quem mantém o GPS vivo é o serviço em primeiro plano (services/rastreio)

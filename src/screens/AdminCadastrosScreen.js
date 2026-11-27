@@ -1,13 +1,15 @@
 /**
  * SCREEN — AdminCadastrosScreen (aba "Cadastros" do administrador)
  * As abas Motoristas · Frota · Rotas · Cartões do painel do site, com busca.
- * Nas rotas dá para ativar/desativar a linha (linha inativa some para o motorista).
- * Criar e editar cadastros continua no painel do site.
+ * Motoristas, veículos e linhas: botão "Novo" para cadastrar e toque no item para
+ * editar (na linha, abre as paradas). Nas rotas dá para ativar/desativar a linha
+ * (linha inativa some para o motorista). Cartões são só consulta.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Switch, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { Button } from '../components/atoms/Button';
 import { Input } from '../components/atoms/Input';
 import { Label } from '../components/atoms/Label';
 import { EstadoCarga } from '../components/molecules/EstadoCarga';
@@ -35,6 +37,13 @@ const SELO_STATUS = {
   afastado: { texto: 'Afastado', tipo: 'ambar' },
   inativo: { texto: 'Inativo', tipo: 'cinza' },
   manutencao: { texto: 'Manutenção', tipo: 'vermelho' },
+};
+
+// botão "Novo" de cada aba (cartão o passageiro cria sozinho)
+const NOVO = {
+  motoristas: { titulo: 'Novo motorista', tela: 'AdminMotorista' },
+  frota: { titulo: 'Novo veículo', tela: 'AdminVeiculo' },
+  rotas: { titulo: 'Nova linha', tela: 'AdminLinhaNova' },
 };
 
 const PLACEHOLDER = {
@@ -134,6 +143,7 @@ export function AdminCadastrosScreen({ navigation, route }) {
               : null,
           ]}
           selo={SELO_STATUS[item.status] ?? { texto: item.status, tipo: 'cinza' }}
+          onPress={() => navigation.navigate('AdminMotorista', { motorista: item })}
         />
       );
     }
@@ -148,6 +158,7 @@ export function AdminCadastrosScreen({ navigation, route }) {
             item.driver_name ? `Motorista: ${item.driver_name}` : item.bus_line,
           ]}
           selo={SELO_STATUS[item.status] ?? { texto: item.status, tipo: 'cinza' }}
+          onPress={() => navigation.navigate('AdminVeiculo', { veiculo: item })}
         />
       );
     }
@@ -157,8 +168,9 @@ export function AdminCadastrosScreen({ navigation, route }) {
           key={item.id}
           icone="map"
           titulo={nomeDaRota(item)}
+          onPress={() => navigation.navigate('AdminParadas', { rota: item })}
           linhas={[
-            `${item.stop_count ?? (item.stops || []).length} paradas`,
+            `${item.stop_count ?? (item.stops || []).length} paradas · toque para editar`,
             [item.driver?.name, item.vehicle?.plate].filter(Boolean).join(' · ') || null,
           ]}
           direita={
@@ -209,6 +221,14 @@ export function AdminCadastrosScreen({ navigation, route }) {
           setBusca('');
         }}
       />
+      {NOVO[aba] ? (
+        <Button
+          title={NOVO[aba].titulo}
+          icone="plus"
+          onPress={() => navigation.navigate(NOVO[aba].tela)}
+          style={styles.novo}
+        />
+      ) : null}
       <Input
         icone="search"
         placeholder={PLACEHOLDER[aba]}
@@ -240,6 +260,7 @@ export function AdminCadastrosScreen({ navigation, route }) {
 }
 
 const useStyles = criarEstilos(({ cores }) => ({
+  novo: { marginBottom: espacamentos.sm + 4 },
   busca: { marginBottom: espacamentos.md, backgroundColor: cores.superficie },
   estado: { minHeight: 200 },
   contagem: { marginBottom: espacamentos.sm, paddingHorizontal: espacamentos.xs },

@@ -3,6 +3,7 @@
  * O <select> do site com um campo de busca junto:
  * o campo mostra a opção escolhida; ao tocar, abre a lista com a busca no topo.
  *   opcoes: [{ id, rotulo, detalhe?, marcador? }]   marcador = texto do círculo (nº da linha)
+ *   marcadorNoCampo=false  o campo fechado mostra só o rótulo (ex.: inicial do motorista)
  */
 import { useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, View } from 'react-native';
@@ -33,6 +34,7 @@ export function SeletorBusca({
   corMarcador,
   mensagemErro,
   vazio = 'Nada encontrado.',
+  marcadorNoCampo = true,
 }) {
   const styles = useStyles();
   const { cores } = useTema();
@@ -75,7 +77,7 @@ export function SeletorBusca({
         ]}>
         <Icone nome="search" cor={cores.textoFraco} tamanho={18} />
         <Label style={[styles.valor, !escolhida && styles.placeholder]} numberOfLines={1}>
-          {carregando ? 'Carregando...' : escolhida ? `${escolhida.marcador ? `${escolhida.marcador} — ` : ''}${escolhida.rotulo}` : placeholder}
+          {carregando ? 'Carregando...' : escolhida ? `${marcadorNoCampo && escolhida.marcador && escolhida.marcador !== '—' ? `${escolhida.marcador} — ` : ''}${escolhida.rotulo}` : placeholder}
         </Label>
         <Icone nome="chevron-down" cor={cores.primaria} tamanho={20} />
       </Pressable>

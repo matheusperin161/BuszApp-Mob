@@ -177,8 +177,8 @@ Backend local: rode o Flask com `FLASK_ENV=development` — em produção o cook
 ## Contas para testar
 
 Use uma conta do site do BusZapp ou crie pelo app (o backend manda um e-mail de confirmação;
-só depois de confirmar dá para entrar). **Motoristas** são cadastrados pelo administrador no
-painel do site. O app aceita os perfis `user`, `motorista` e `admin`.
+só depois de confirmar dá para entrar). **Motoristas** são cadastrados pelo administrador (no
+app, em Cadastros → Novo motorista, ou no painel do site). O app aceita os perfis `user`, `motorista` e `admin`.
 
 ---
 
@@ -193,13 +193,20 @@ painel do site. O app aceita os perfis `user`, `motorista` e `admin`.
 | Recarga | cartão de transporte, cadastrar cartão, recarregar, extrato | `/card/register`, `POST /recharge`, `GET /transactions` |
 | Avaliar | nota geral, 4 critérios, linha, horário e comentário | `POST /submit-rating` |
 | Notificações | sino do cabeçalho | `GET /notifications` |
-| Perfil / Configurações | foto, dados, senha, aviso de saldo baixo | `PUT /auth/profile`, `POST /auth/profile/picture` |
+| Perfil / Configurações | foto, dados, senha, aviso de saldo baixo, aparência (sistema · claro · escuro) | `PUT /auth/profile`, `POST /auth/profile/picture` |
 | Painel do motorista | linha (com busca) → horário → iniciar/encerrar trajeto, GPS a cada 5 s | `/auth/driver/trip/start`, `POST /update_location`, `/auth/driver/trip/stop` |
 | Ocorrência | avisa os passageiros | `POST /incidents` |
 | Admin · Geral | ônibus em rota, motoristas, frota, linhas, recargas, avaliações | `/admin/active-trips-count`, `/admin/drivers`, `/admin/vehicles`, `/admin/routes`, `/admin/all-transactions`, `/admin/ratings` |
 | Admin · Mapa | todos os ônibus transmitindo (atualiza a cada 10 s) | `GET /admin/all-bus-locations` |
 | Admin · Cadastros | motoristas, frota, rotas (ativar/desativar) e cartões, com busca | `PATCH /admin/routes/:id`, `/admin/users/cards` |
+| Admin · Motorista | cadastrar/editar/excluir (cria o login do motorista) | `POST/PUT/DELETE /admin/drivers` |
+| Admin · Veículo | cadastrar/editar/excluir, linha e motorista | `POST/PUT/DELETE /admin/vehicles` |
+| Admin · Nova linha | número, nome, tarifa, origem e destino marcados no mapa | `POST /admin/routes` |
+| Admin · Paradas | mapa + lista; incluir, editar, excluir e mudar a ordem (↑ ↓) | `/admin/routes/:id/stops` |
 | Admin · Avaliações | médias por critério, filtro por motorista | `GET /admin/ratings` |
+
+**Modo escuro:** a lua/sol no cabeçalho troca na hora; em Configurações → Aparência dá para
+escolher *Sistema* (segue o celular), *Claro* ou *Escuro*. A escolha fica salva no aparelho.
 
 O motorista usa as **mesmas rotas do painel do site**, então o passageiro vê o ônibus
 (iniciado e posição) **no site e no app** pelo horário escolhido.

@@ -10,6 +10,7 @@
  *   perigo     degradê vermelho ("Finalizar viagem")
  *   sucesso    degradê verde ("Iniciar trajeto")
  *   link       só o texto em âmbar
+ *   perigoContorno  contorno e texto vermelhos ("Excluir")
  * icone (opcional) é o nome de um ícone Feather (ver atoms/Icone).
  */
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
@@ -31,6 +32,7 @@ const COR_TEXTO = {
   secundario: 'textoMedio',
   claro: 'textoMedio',
   link: 'link',
+  perigoContorno: 'perigo',
 };
 
 export function Button({
@@ -96,6 +98,11 @@ const useStyles = criarEstilos(({ cores, sombra, sombraForte }) => ({
     backgroundColor: cores.superficie,
     borderWidth: 1.5,
     borderColor: cores.bordaNeutra,
+  },
+  perigoContorno: {
+    backgroundColor: cores.superficie,
+    borderWidth: 1.5,
+    borderColor: cores.perigo,
   },
   claro: { backgroundColor: cores.cinzaClaro },
   link: { minHeight: 36, paddingHorizontal: 0, backgroundColor: 'transparent' },
