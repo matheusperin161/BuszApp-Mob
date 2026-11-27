@@ -150,6 +150,8 @@ npx react-native run-ios --no-packager
 
 - Mudou só código em `src/`? Não precisa compilar: aperte **`r`** no terminal do Metro.
 - Desconectou o cabo? Rode de novo `adb reverse tcp:8081 tcp:8081`.
+- **Versão 1.2 (favoritas, QR, widget...):** tem código nativo novo (câmera, widget,
+  serviço do aviso). Rode `npm install` e compile de novo uma vez (`run-android` ou o APK).
 - Só compile de novo (`run-android`) quando mudar o `package.json`, algo em `android/`/`ios/`,
   ou se o app for desinstalado. Depois de trocar bibliotecas, antes de compilar:
   `cd android && ./gradlew clean && cd ..` (no Windows: `cd android && gradlew clean && cd ..`).
@@ -188,16 +190,20 @@ app, em Cadastros → Novo motorista, ou no painel do site). O app aceita os per
 |---|---|---|
 | Login / Cadastro | entrar, login automático, "Lembrar de mim", termos | `POST /auth/login`, `GET /auth/profile`, `POST /auth/register` |
 | Verificar e-mail / Esqueci a senha | reenviar link; código de 6 dígitos → nova senha | `/auth/resend-verification`, `/auth/forgot-password`, `/auth/verify-reset-code`, `/auth/reset-password` |
-| Início | saldo, atalhos, últimas transações | `GET /card/info`, `GET /transactions` |
-| Mapa → Acompanhamento | linhas com busca; status, mapa ao vivo, horários ("ao vivo"), paradas | `GET /routes`, `/route/:n`, `/route/:n/schedules`, `/bus_location/:id` |
+| Início | saldo, atalhos, minhas linhas (favoritas), últimas transações | `GET /card/info`, `GET /transactions` |
+| Mapa → Acompanhamento | linhas com busca e estrela de favorita; status, lotação, mapa ao vivo, horários ("ao vivo"), paradas, **Avisar quando chegar** | `GET /routes`, `/route/:n`, `/route/:n/schedules`, `/bus_location/:id` |
+| Embarque por QR | QR assinado (vale 3 min, uso único, renova sozinho) | `GET /card/qr` |
 | Recarga | cartão de transporte, cadastrar cartão, recarregar, extrato | `/card/register`, `POST /recharge`, `GET /transactions` |
 | Avaliar | nota geral, 4 critérios, linha, horário e comentário | `POST /submit-rating` |
 | Notificações | sino do cabeçalho | `GET /notifications` |
-| Perfil / Configurações | foto, dados, senha, aviso de saldo baixo, aparência (sistema · claro · escuro) | `PUT /auth/profile`, `POST /auth/profile/picture` |
-| Painel do motorista | linha (com busca) → horário → iniciar/encerrar trajeto, GPS a cada 5 s | `/auth/driver/trip/start`, `POST /update_location`, `/auth/driver/trip/stop` |
-| Ocorrência | avisa os passageiros | `POST /incidents` |
+| Perfil / Configurações | foto, dados, senha, aviso de saldo baixo, aparência (sistema · claro · escuro), acessibilidade (letra e contraste), horários sem internet | `PUT /auth/profile`, `POST /auth/profile/picture` |
+| Painel do motorista | minha escala; linha → horário → iniciar/encerrar trajeto, GPS a cada 5 s, lotação | `/auth/driver/escala`, `/auth/driver/trip/start`, `POST /update_location`, `/auth/driver/trip/lotacao`, `/auth/driver/trip/stop` |
+| Cobrar passagem | câmera lê o QR do passageiro e cobra a tarifa da linha | `POST /embarque` |
+| Ocorrência | avisa os passageiros; foto e local vão para o admin | `POST /incidents`, `POST /incidents/:id/photo` |
 | Admin · Geral | ônibus em rota, motoristas, frota, linhas, recargas, avaliações | `/admin/active-trips-count`, `/admin/drivers`, `/admin/vehicles`, `/admin/routes`, `/admin/all-transactions`, `/admin/ratings` |
-| Admin · Mapa | todos os ônibus transmitindo (atualiza a cada 10 s) | `GET /admin/all-bus-locations` |
+| Admin · Geral → Gráficos | recargas por dia, viagens por linha, avaliações por semana (7/30/90 dias) | `GET /admin/estatisticas` |
+| Admin · Geral → Escala | turnos por semana; criar, editar e excluir | `/admin/escalas` |
+| Admin · Mapa | todos os ônibus transmitindo (atualiza a cada 10 s) e ocorrências abertas com foto | `GET /admin/all-bus-locations`, `GET /incidents`, `POST /incidents/:id/resolve` |
 | Admin · Cadastros | motoristas, frota, rotas (ativar/desativar) e cartões, com busca | `PATCH /admin/routes/:id`, `/admin/users/cards` |
 | Admin · Motorista | cadastrar/editar/excluir (cria o login do motorista) | `POST/PUT/DELETE /admin/drivers` |
 | Admin · Veículo | cadastrar/editar/excluir, linha e motorista | `POST/PUT/DELETE /admin/vehicles` |
@@ -210,6 +216,26 @@ escolher *Sistema* (segue o celular), *Claro* ou *Escuro*. A escolha fica salva 
 
 O motorista usa as **mesmas rotas do painel do site**, então o passageiro vê o ônibus
 (iniciado e posição) **no site e no app** pelo horário escolhido.
+
+**Acessibilidade:** Configurações → Acessibilidade tem tamanho da letra (Normal, Grande,
+Muito grande) e alto contraste; os botões têm descrição para TalkBack/VoiceOver.
+
+**Sem internet:** linhas, horários e paradas abertos ficam salvos no aparelho; sem sinal, o app
+mostra a cópia com a data. Em Configurações dá para baixar todas as linhas de uma vez.
+
+### Aviso de chegada
+
+No acompanhamento da linha, o passageiro escolhe a parada e a antecedência (3, 5 ou 10 min).
+A cada 20 s o app calcula onde estão os ônibus da linha e notifica quando o primeiro estiver
+perto, também com o app fechado (Android: serviço em primeiro plano tipo `dataSync`, com o
+botão "Cancelar aviso" na notificação). Desliga sozinho depois de avisar ou em 2 horas.
+Código: `src/services/avisoChegada.js`.
+
+### Widget (Android)
+
+Segure o dedo na tela inicial → Widgets → **BusZapp**. Mostra o saldo e o próximo ônibus da
+primeira linha favorita; toque para abrir o app. Os dados são atualizados sempre que a tela
+Início abre. Código nativo em `android/app/src/main/java/br/com/buszapp/mobile/widget/`.
 
 ### GPS com a tela bloqueada
 

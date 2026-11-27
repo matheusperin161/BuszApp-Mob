@@ -44,3 +44,16 @@ test('passageiro gera o QR e admin usa escala e gráficos', async () => {
   await estatisticas(90);
   expect(apiRequest).toHaveBeenLastCalledWith('/admin/estatisticas?dias=90');
 });
+
+test('dados do widget: saldo, 1ª favorita e horários', () => {
+  const { dadosDoWidget } = require('../src/services/widget');
+  const d = dadosDoWidget({
+    cartao: { card_number: '123', card_balance: 12.5 },
+    favorita: { numero: 7, nome: 'Centro - Efapi' },
+    horarios: [{ departure_time: '06:00' }, { departure_time: '09:00' }],
+  });
+  expect(d.saldo).toBe(12.5);
+  expect(d.linha).toEqual({ numero: '7', nome: 'Centro - Efapi' });
+  expect(d.horarios).toEqual(['06:00', '09:00']);
+  expect(dadosDoWidget({ cartao: {}, favorita: null, horarios: [] })).toMatchObject({ saldo: null, linha: null });
+});

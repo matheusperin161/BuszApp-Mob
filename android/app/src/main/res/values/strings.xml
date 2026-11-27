@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BusZapp</string>
+    <string name="widget_descricao">Saldo do cartão e próximo ônibus da sua linha favorita</string>
 </resources>

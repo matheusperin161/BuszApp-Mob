@@ -27,7 +27,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>O BusZapp usa a câmera para a foto do seu perfil.</string>
+	<string>O BusZapp usa a câmera para a foto do perfil, a foto de ocorrências e para ler o QR Code de embarque.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>O BusZapp usa a galeria para a foto do seu perfil.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

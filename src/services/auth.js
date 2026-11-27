@@ -9,6 +9,7 @@
  * e sessaoAtiva() confere no backend ao reabrir o app.
  */
 import { ApiError, apiRequest } from './api';
+import { limparWidget } from './widget';
 import {
   obterLocal,
   obterToken,
@@ -186,5 +187,5 @@ export async function logout() {
   } catch {
     // ignora
   }
-  await Promise.all([removerToken(), removerLocal(CHAVE_SESSAO_TEMPORARIA)]);
+  await Promise.all([removerToken(), removerLocal(CHAVE_SESSAO_TEMPORARIA), limparWidget()]);
 }

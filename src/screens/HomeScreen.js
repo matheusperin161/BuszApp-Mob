@@ -23,6 +23,7 @@ import { voltarAoLogin } from '../navigation/acoes';
 import { obterSessao } from '../services/auth';
 import { listarTransacoes, obterCartao } from '../services/cartao';
 import { enviarAvisoLocal } from '../services/nativos';
+import { atualizarWidget } from '../services/widget';
 import { obterPreferencias } from '../services/preferencias';
 import { espacamentos, raios } from '../theme';
 import { criarEstilos, useTema } from '../theme/tema';
@@ -64,6 +65,8 @@ export function HomeScreen({ navigation }) {
       setTransacoes(lista || []);
       setPrefs(preferencias);
       setAtualizadoEm(new Date());
+      // widget da tela inicial (Android): saldo + próximo ônibus da 1ª favorita
+      atualizarWidget({ cartao: info, favoritas: preferencias.favoritas }).catch(() => {});
 
       const saldoBaixo = info?.card_number && info.card_balance < SALDO_BAIXO;
       if (saldoBaixo && preferencias.avisoSaldoBaixo && !avisoSaldoMostrado) {
