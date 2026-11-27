@@ -5,9 +5,10 @@
  * mensagemErro pinta a borda e o texto; o pai decide quando mostrar.
  */
 import { forwardRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 import { Input } from '../atoms/Input';
 import { Label } from '../atoms/Label';
 
@@ -15,6 +16,7 @@ export const FormField = forwardRef(function FormField(
   { label, erro = false, mensagemErro, ajuda, rotuloSecao = false, style, ...props },
   ref,
 ) {
+  const styles = useStyles();
   const temErro = erro || Boolean(mensagemErro);
 
   return (
@@ -38,7 +40,7 @@ export const FormField = forwardRef(function FormField(
   );
 });
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { marginBottom: espacamentos.md },
   label: {
     marginBottom: espacamentos.sm,
@@ -48,4 +50,4 @@ const styles = StyleSheet.create({
   secao: { marginBottom: espacamentos.sm, letterSpacing: 1 },
   erro: { color: cores.perigo, marginTop: espacamentos.xs },
   ajuda: { marginTop: espacamentos.xs },
-});
+}));

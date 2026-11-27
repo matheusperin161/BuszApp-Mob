@@ -6,14 +6,15 @@
  * "Esqueceu a senha?" na mesma linha, botão "Entrar" em degradê.
  */
 import { useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Button } from '../atoms/Button';
 import { Checkbox } from '../atoms/Checkbox';
 import { Label } from '../atoms/Label';
 import { ErrorMessage } from '../molecules/ErrorMessage';
 import { FormField } from '../molecules/FormField';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 import {
   erroVisivel,
   primeiroErro,
@@ -28,6 +29,7 @@ export function LoginForm({
   erro = null,
   emailInicial = '',
 }) {
+  const styles = useStyles();
   const [email, setEmail] = useState(emailInicial);
   const [senha, setSenha] = useState('');
   const [lembrar, setLembrar] = useState(true);
@@ -107,7 +109,7 @@ export function LoginForm({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { width: '100%' },
   linha: {
     flexDirection: 'row',
@@ -117,4 +119,4 @@ const styles = StyleSheet.create({
     gap: espacamentos.sm,
   },
   link: { color: cores.link, fontWeight: '600' },
-});
+}));

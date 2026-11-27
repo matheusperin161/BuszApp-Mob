@@ -4,9 +4,10 @@
  *   degrade  quadrado em degradê âmbar → laranja com ícone branco (atalhos da Home)
  *   fundo/cor  quadrado de cor clara com ícone colorido (Ações rápidas, Recarga)
  */
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { cores, gradientes, raios } from '../../theme';
+import { raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { Gradiente } from '../atoms/Gradiente';
 import { Icone } from '../atoms/Icone';
 
@@ -14,11 +15,13 @@ export function IconeCaixa({
   nome,
   tamanho = 48,
   degrade = false,
-  fundo = cores.superficieAlt,
-  cor = cores.primariaEscura,
+  fundo,
+  cor,
   redondo = false,
   style,
 }) {
+  const styles = useStyles();
+  const { cores, gradientes } = useTema();
   return (
     <View
       style={[
@@ -27,21 +30,21 @@ export function IconeCaixa({
           width: tamanho,
           height: tamanho,
           borderRadius: redondo ? tamanho / 2 : Math.round(tamanho * 0.3),
-          backgroundColor: degrade ? cores.primaria : fundo,
+          backgroundColor: degrade ? cores.primaria : fundo ?? cores.superficieAlt,
         },
         style,
       ]}>
       {degrade ? <Gradiente {...gradientes.marca} /> : null}
-      <Icone nome={nome} cor={degrade ? cores.textoInverso : cor} tamanho={Math.round(tamanho * 0.48)} />
+      <Icone nome={nome} cor={degrade ? cores.textoInverso : cor ?? cores.primariaEscura} tamanho={Math.round(tamanho * 0.48)} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(() => ({
   caixa: {
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
     borderRadius: raios.md,
   },
-});
+}));

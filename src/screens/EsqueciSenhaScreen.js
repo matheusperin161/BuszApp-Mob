@@ -3,7 +3,7 @@
  * Mesmo fluxo do site: e-mail → código de 6 dígitos (15 min) → nova senha.
  */
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Button } from '../components/atoms/Button';
 import { Icone } from '../components/atoms/Icone';
@@ -14,10 +14,13 @@ import { FormField } from '../components/molecules/FormField';
 import { RedefinirSenhaForm } from '../components/organisms/RedefinirSenhaForm';
 import { CenteredTemplate } from '../components/templates/CenteredTemplate';
 import { redefinirSenha, solicitarCodigo, verificarCodigo } from '../services/auth';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { validarEmail } from '../utils/validacao';
 
 export function EsqueciSenhaScreen({ navigation }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [etapa, setEtapa] = useState('email');
   const [email, setEmail] = useState('');
   const [tocado, setTocado] = useState(false);
@@ -125,8 +128,8 @@ export function EsqueciSenhaScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   link: { color: cores.link, fontWeight: '700', fontSize: 15 },
   voltar: { flexDirection: 'row', alignItems: 'center', gap: espacamentos.sm },
   voltarTexto: { color: cores.textoSecundario, fontSize: 15 },
-});
+}));

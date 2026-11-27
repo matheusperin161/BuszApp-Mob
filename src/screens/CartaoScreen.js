@@ -4,7 +4,7 @@
  * "Cadastrar Cartão" e "Recarregar" e a linha "Última Recarga".
  */
 import { useCallback, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Icone } from '../components/atoms/Icone';
@@ -17,10 +17,13 @@ import { OpcaoTile } from '../components/molecules/OpcaoTile';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { voltarAoLogin } from '../navigation/acoes';
 import { listarTransacoes, obterCartao } from '../services/cartao';
-import { cores, espacamentos, raios, sombra } from '../theme';
+import { espacamentos, raios } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { dataCurta, dinheiro } from '../utils/formato';
 
 export function CartaoScreen({ navigation, route }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [cartao, setCartao] = useState(null);
   const [transacoes, setTransacoes] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -110,7 +113,7 @@ export function CartaoScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   opcoes: { flexDirection: 'row', gap: espacamentos.md, marginBottom: espacamentos.lg },
   ultima: {
     flexDirection: 'row',
@@ -125,4 +128,4 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   ultimaRotulo: { fontSize: 14 },
   ultimaValor: { fontWeight: '700', fontSize: 17, marginTop: 1 },
-});
+}));

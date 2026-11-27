@@ -13,7 +13,7 @@
  * Esta tela só liga, desliga e mostra o que está acontecendo.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, AppState, Platform, StyleSheet, View } from 'react-native';
+import { Alert, AppState, Platform, View } from 'react-native';
 
 import { Button } from '../components/atoms/Button';
 import { Icone } from '../components/atoms/Icone';
@@ -42,7 +42,8 @@ import {
   iniciarRastreio,
   pararRastreio,
 } from '../services/rastreio';
-import { cores, espacamentos, raios } from '../theme';
+import { espacamentos, raios } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 
 const MAX_REGISTROS = 8;
 const GPS_INICIAL = { ultima: null, envios: 0, ultimoEnvioOk: null, erro: null, falhaEnvio: null };
@@ -65,6 +66,7 @@ function textoPrecisao(metros) {
 }
 
 function StatusConexao({ online, texto }) {
+  const styles = useStyles();
   return (
     <View style={styles.status}>
       <Label style={styles.statusTexto}>{texto}</Label>
@@ -74,6 +76,7 @@ function StatusConexao({ online, texto }) {
 }
 
 function Estatistica({ rotulo, valor }) {
+  const styles = useStyles();
   return (
     <View style={styles.estat}>
       <Label variante="secao" style={styles.estatRotulo}>
@@ -87,6 +90,8 @@ function Estatistica({ rotulo, valor }) {
 }
 
 export function MotoristaScreen({ navigation }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [trajeto, setTrajeto] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [linhas, setLinhas] = useState([]);
@@ -425,7 +430,7 @@ export function MotoristaScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   flex: { flex: 1 },
   status: { flexDirection: 'row', alignItems: 'center', gap: 8, marginRight: espacamentos.md },
   statusTexto: { color: 'rgba(255,255,255,0.92)', fontSize: 14 },
@@ -463,7 +468,7 @@ const styles = StyleSheet.create({
   registro: {
     flexDirection: 'row',
     gap: espacamentos.md,
-    backgroundColor: '#FEF7DC',
+    backgroundColor: cores.registro,
     borderRadius: raios.md,
     paddingHorizontal: espacamentos.md,
     paddingVertical: espacamentos.sm + 4,
@@ -473,4 +478,4 @@ const styles = StyleSheet.create({
   registroTexto: { flex: 1, fontSize: 14 },
   textoSucesso: { color: cores.sucesso },
   textoErro: { color: cores.perigo },
-});
+}));

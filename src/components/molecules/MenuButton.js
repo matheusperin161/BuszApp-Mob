@@ -3,14 +3,17 @@
  * Uma linha de "Ações Rápidas" do perfil do site: ícone num quadradinho
  * âmbar claro + texto. perigo=true pinta de vermelho ("Sair da conta").
  */
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
 import { IconeCaixa } from './IconeCaixa';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 export function MenuButton({ icone, titulo, descricao, onPress, perigo = false }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   return (
     <Pressable
       onPress={onPress}
@@ -32,7 +35,7 @@ export function MenuButton({ icone, titulo, descricao, onPress, perigo = false }
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: {
     minHeight: 60,
     flexDirection: 'row',
@@ -46,4 +49,4 @@ const styles = StyleSheet.create({
   textos: { flex: 1 },
   titulo: { fontSize: 16, color: cores.textoMedio, fontWeight: '500' },
   tituloPerigo: { color: cores.perigo },
-});
+}));

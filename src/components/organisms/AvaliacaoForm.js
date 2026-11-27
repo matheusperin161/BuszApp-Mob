@@ -6,7 +6,7 @@
  * A screen carrega as linhas e os horários; o form só controla o que o usuário escolheu.
  */
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '../atoms/Button';
 import { Icone } from '../atoms/Icone';
@@ -16,7 +16,8 @@ import { ChipGrupo } from '../molecules/ChipGrupo';
 import { ErrorMessage } from '../molecules/ErrorMessage';
 import { EstrelasCampo } from '../molecules/EstrelasCampo';
 import { TextAreaField } from '../molecules/TextAreaField';
-import { cores, espacamentos, raios, sombra } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { LIMITES } from '../../utils/validacao';
 
 // "atendimento" é o campo service_rating do backend; o site chama de "Motorista"
@@ -41,6 +42,8 @@ export function AvaliacaoForm({
   carregando = false,
   erro = null,
 }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [horario, setHorario] = useState(horarioInicial);
   const [notas, setNotas] = useState(NOTAS_VAZIAS);
   const [comentario, setComentario] = useState('');
@@ -142,7 +145,7 @@ export function AvaliacaoForm({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   container: { width: '100%' },
   grade: {
     flexDirection: 'row',
@@ -168,4 +171,4 @@ const styles = StyleSheet.create({
   },
   criterioRotulo: { fontWeight: '700', fontSize: 15 },
   cancelar: { marginTop: espacamentos.sm },
-});
+}));

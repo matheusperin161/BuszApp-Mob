@@ -12,23 +12,25 @@
  *   link       só o texto em âmbar
  * icone (opcional) é o nome de um ícone Feather (ver atoms/Icone).
  */
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
-import { cores, espacamentos, gradientes, raios, sombraForte, tipografia } from '../../theme';
+import { espacamentos, raios, tipografia } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { Gradiente } from './Gradiente';
 import { Icone } from './Icone';
 
 const DEGRADE = {
-  primario: gradientes.acao,
-  entrar: gradientes.botao,
-  perigo: gradientes.perigo,
-  sucesso: gradientes.sucesso,
+  primario: 'acao',
+  entrar: 'botao',
+  perigo: 'perigo',
+  sucesso: 'sucesso',
 };
 
+// variantes sem degradê: cor do texto vem do tema
 const COR_TEXTO = {
-  secundario: cores.textoMedio,
-  claro: cores.textoMedio,
-  link: cores.link,
+  secundario: 'textoMedio',
+  claro: 'textoMedio',
+  link: 'link',
 };
 
 export function Button({
@@ -41,9 +43,11 @@ export function Button({
   style,
   textoStyle,
 }) {
+  const styles = useStyles();
+  const { cores, gradientes } = useTema();
   const inativo = desabilitado || carregando;
-  const degrade = DEGRADE[variante];
-  const corTexto = COR_TEXTO[variante] ?? cores.textoInverso;
+  const degrade = DEGRADE[variante] ? gradientes[DEGRADE[variante]] : null;
+  const corTexto = COR_TEXTO[variante] ? cores[COR_TEXTO[variante]] : cores.textoInverso;
 
   return (
     <Pressable
@@ -73,7 +77,7 @@ export function Button({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra, sombraForte }) => ({
   base: {
     minHeight: 52,
     paddingHorizontal: espacamentos.lg,
@@ -103,4 +107,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
   },
-});
+}));

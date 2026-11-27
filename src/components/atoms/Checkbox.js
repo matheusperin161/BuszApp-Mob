@@ -3,13 +3,16 @@
  * Caixinha de marcar com texto ao lado ("Lembrar de mim", aceite dos termos).
  * children permite texto com partes em destaque.
  */
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { Icone } from './Icone';
 import { Label } from './Label';
 
 export function Checkbox({ marcado, onChange, rotulo, children, erro = false, style }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   return (
     <Pressable
       onPress={() => onChange(!marcado)}
@@ -25,7 +28,7 @@ export function Checkbox({ marcado, onChange, rotulo, children, erro = false, st
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   linha: { flexDirection: 'row', alignItems: 'center', gap: espacamentos.sm, flexShrink: 1 },
   caixa: {
     width: 20,
@@ -40,4 +43,4 @@ const styles = StyleSheet.create({
   marcado: { backgroundColor: cores.primaria, borderColor: cores.primaria },
   erro: { borderColor: cores.perigo },
   texto: { color: cores.textoMedio },
-});
+}));

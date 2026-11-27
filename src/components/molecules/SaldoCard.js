@@ -3,15 +3,18 @@
  * O cartão em degradê do topo da Home do site: "SALDO DO CARTÃO", valor grande,
  * "Atualizado agora" e a pílula com a saudação. Só desenha — quem busca é a screen.
  */
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 
 import { Gradiente } from '../atoms/Gradiente';
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
-import { espacamentos, gradientes, raios, sombraForte } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { dinheiro } from '../../utils/formato';
 
 export function SaldoCard({ saldo, carregando = false, saudacao, nome, rodape, onPress }) {
+  const styles = useStyles();
+  const { gradientes } = useTema();
   return (
     <Pressable
       onPress={onPress}
@@ -51,7 +54,7 @@ export function SaldoCard({ saldo, carregando = false, saudacao, nome, rodape, o
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ sombraForte }) => ({
   card: {
     borderRadius: raios.xl + 4,
     paddingHorizontal: espacamentos.xl,
@@ -92,4 +95,4 @@ const styles = StyleSheet.create({
   },
   pilulaTexto: { color: '#FFFFFF', fontSize: 15, flexShrink: 1 },
   nome: { color: '#FFFFFF', fontWeight: '800', fontSize: 15 },
-});
+}));

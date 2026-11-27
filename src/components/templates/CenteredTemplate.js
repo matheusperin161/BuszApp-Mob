@@ -12,14 +12,14 @@ import {
   Platform,
   ScrollView,
   StatusBar,
-  StyleSheet,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Gradiente } from '../atoms/Gradiente';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos, gradientes, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 export function CenteredTemplate({
   destaque,
@@ -30,6 +30,8 @@ export function CenteredTemplate({
   children,
   rodape,
 }) {
+  const styles = useStyles();
+  const { gradientes } = useTema();
   const insets = useSafeAreaInsets();
   return (
     <View style={styles.tela}>
@@ -68,7 +70,7 @@ export function CenteredTemplate({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   tela: { flex: 1, backgroundColor: cores.primariaEscura },
   flex: { flex: 1 },
   conteudo: {
@@ -120,4 +122,4 @@ const styles = StyleSheet.create({
     lineHeight: 21,
   },
   rodape: { marginTop: espacamentos.lg, alignItems: 'center' },
-});
+}));

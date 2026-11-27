@@ -2,15 +2,18 @@
  * ORGANISM — TermosModal
  * Os Termos de Serviço numa janela por cima do cadastro (como o modal do site).
  */
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, ScrollView, View } from 'react-native';
 
 import { Button } from '../atoms/Button';
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
 import { TERMOS } from '../../constants/termos';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 export function TermosModal({ visivel, onFechar, onAceitar }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   return (
     <Modal visible={visivel} transparent animationType="fade" onRequestClose={onFechar}>
       <Pressable style={styles.fundo} onPress={onFechar}>
@@ -43,10 +46,10 @@ export function TermosModal({ visivel, onFechar, onAceitar }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   fundo: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: cores.sobreposicao,
     justifyContent: 'center',
     padding: espacamentos.md,
   },
@@ -70,4 +73,4 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: cores.bordaNeutra,
   },
-});
+}));

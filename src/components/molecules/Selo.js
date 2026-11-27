@@ -2,22 +2,28 @@
  * MOLECULE — Selo
  * Pílula pequena com ícone ("✓ Verificado", "Usuário", "Membro desde...").
  */
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
-const TIPOS = {
-  verde: { fundo: cores.sucessoFundo, cor: cores.sucessoTexto },
-  ambar: { fundo: '#FEF9C3', cor: '#A16207' },
-  cinza: { fundo: cores.cinzaClaro, cor: cores.textoMedio },
-  azul: { fundo: cores.infoFundo, cor: cores.infoTexto },
-  vermelho: { fundo: cores.perigoFundo, cor: cores.perigoTexto },
-};
+function tipos(cores, escuro) {
+  return {
+    verde: { fundo: cores.sucessoFundo, cor: cores.sucessoTexto },
+    ambar: escuro ? { fundo: '#422006', cor: '#FDE68A' } : { fundo: '#FEF9C3', cor: '#A16207' },
+    cinza: { fundo: cores.cinzaClaro, cor: cores.textoMedio },
+    azul: { fundo: cores.infoFundo, cor: cores.infoTexto },
+    vermelho: { fundo: cores.perigoFundo, cor: cores.perigoTexto },
+  };
+}
 
 export function Selo({ icone, texto, tipo = 'cinza' }) {
-  const visual = TIPOS[tipo] ?? TIPOS.cinza;
+  const styles = useStyles();
+  const { cores, escuro } = useTema();
+  const lista = tipos(cores, escuro);
+  const visual = lista[tipo] ?? lista.cinza;
   return (
     <View style={[styles.selo, { backgroundColor: visual.fundo }]}>
       {icone ? <Icone nome={icone} cor={visual.cor} tamanho={14} /> : null}
@@ -26,7 +32,7 @@ export function Selo({ icone, texto, tipo = 'cinza' }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(() => ({
   selo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -36,4 +42,4 @@ const styles = StyleSheet.create({
     borderRadius: raios.pilula,
   },
   texto: { fontSize: 13, fontWeight: '600' },
-});
+}));

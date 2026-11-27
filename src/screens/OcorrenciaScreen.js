@@ -3,7 +3,6 @@
  * Motorista avisa atraso, pane, acidente... Todos os passageiros recebem.
  */
 import { useState } from 'react';
-import { StyleSheet } from 'react-native';
 
 import { Button } from '../components/atoms/Button';
 import { Label } from '../components/atoms/Label';
@@ -12,9 +11,12 @@ import { IconeCaixa } from '../components/molecules/IconeCaixa';
 import { OcorrenciaForm } from '../components/organisms/OcorrenciaForm';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { registrarOcorrencia } from '../services/motorista';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 
 export function OcorrenciaScreen({ navigation, route }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const trajeto = route.params?.trajeto ?? null;
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
@@ -66,8 +68,8 @@ export function OcorrenciaScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   sucesso: { alignItems: 'center', paddingVertical: espacamentos.xl },
   titulo: { marginTop: espacamentos.md, textAlign: 'center' },
   texto: { textAlign: 'center', marginTop: espacamentos.sm, color: cores.textoSecundario, fontSize: 15 },
-});
+}));

@@ -11,9 +11,10 @@ import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { obterSessao } from '../services/auth';
 import { cadastrarCartao } from '../services/cartao';
 import { irParaAba } from '../navigation/acoes';
-import { cores } from '../theme';
+import { useTema } from '../theme/tema';
 
 export function CadastroCartaoScreen({ navigation }) {
+  const { cores } = useTema();
   const [usuario, setUsuario] = useState(null);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState(null);

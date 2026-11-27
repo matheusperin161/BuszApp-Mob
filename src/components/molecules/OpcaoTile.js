@@ -3,13 +3,15 @@
  * Bloco grande com ícone colorido, título e descrição
  * ("Cadastrar Cartão" / "Recarregar" da tela Recarga do site).
  */
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { Label } from '../atoms/Label';
 import { IconeCaixa } from './IconeCaixa';
-import { cores, espacamentos, raios, sombra } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 
 export function OpcaoTile({ icone, titulo, descricao, fundo, cor, onPress, desabilitado = false }) {
+  const styles = useStyles();
   return (
     <Pressable
       onPress={onPress}
@@ -29,7 +31,7 @@ export function OpcaoTile({ icone, titulo, descricao, fundo, cor, onPress, desab
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   tile: {
     flex: 1,
     alignItems: 'center',
@@ -44,4 +46,4 @@ const styles = StyleSheet.create({
   inativo: { opacity: 0.55 },
   titulo: { fontSize: 17, fontWeight: '800', color: cores.texto, textAlign: 'center', marginTop: 4 },
   descricao: { textAlign: 'center', fontSize: 13 },
-});
+}));

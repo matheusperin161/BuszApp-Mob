@@ -3,16 +3,19 @@
  * O cartão azul da tela Recarga do site: tipo, chip dourado, número mascarado,
  * saldo e titular. Sem cartão, mostra o convite para cadastrar.
  */
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { Gradiente } from '../atoms/Gradiente';
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
 import { rotuloTipoCartao } from '../../constants/cartao';
-import { espacamentos, gradientes, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { dinheiro, mascararCartao } from '../../utils/formato';
 
 export function CartaoTransporte({ cartao, carregando = false }) {
+  const styles = useStyles();
+  const { gradientes } = useTema();
   const temCartao = Boolean(cartao?.card_number);
   const titular = (cartao?.card_holder || '').split(' ')[0]?.toUpperCase();
 
@@ -68,7 +71,7 @@ export function CartaoTransporte({ cartao, carregando = false }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(() => ({
   cartao: {
     borderRadius: raios.xl + 4,
     padding: espacamentos.lg + 4,
@@ -113,4 +116,4 @@ const styles = StyleSheet.create({
   convite: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6 },
   conviteTexto: { color: '#FFFFFF', fontWeight: '600' },
   titular: { color: '#FFFFFF', fontWeight: '800', fontSize: 15, marginTop: 2 },
-});
+}));

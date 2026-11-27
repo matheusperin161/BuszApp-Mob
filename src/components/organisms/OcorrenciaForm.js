@@ -4,7 +4,7 @@
  * Os passageiros recebem um aviso.
  */
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Button } from '../atoms/Button';
 import { Label } from '../atoms/Label';
@@ -13,10 +13,13 @@ import { ErrorMessage } from '../molecules/ErrorMessage';
 import { IconeCaixa } from '../molecules/IconeCaixa';
 import { TextAreaField } from '../molecules/TextAreaField';
 import { TIPOS_OCORRENCIA } from '../../services/motorista';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { LIMITES } from '../../utils/validacao';
 
 export function OcorrenciaForm({ onSubmit, carregando = false, erro = null }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [tipo, setTipo] = useState(null);
   const [descricao, setDescricao] = useState('');
   const [tentou, setTentou] = useState(false);
@@ -78,7 +81,7 @@ export function OcorrenciaForm({ onSubmit, carregando = false, erro = null }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { width: '100%' },
   grade: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: espacamentos.sm + 4 },
   opcao: {
@@ -91,8 +94,8 @@ const styles = StyleSheet.create({
     borderColor: cores.borda,
     backgroundColor: cores.fundo,
   },
-  opcaoAtiva: { borderColor: cores.destaque, backgroundColor: '#FFF7ED' },
+  opcaoAtiva: { borderColor: cores.destaque, backgroundColor: cores.realce },
   opcaoTexto: { fontWeight: '600', color: cores.textoMedio },
   opcaoTextoAtivo: { color: cores.primariaTexto },
   erro: { color: cores.perigo, marginTop: espacamentos.sm },
-});
+}));

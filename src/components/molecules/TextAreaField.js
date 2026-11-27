@@ -2,9 +2,10 @@
  * MOLECULE — TextAreaField
  * TextArea + erro do campo + contador de caracteres.
  */
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 import { TextArea } from '../atoms/TextArea';
 import { Label } from '../atoms/Label';
 
@@ -17,6 +18,7 @@ export function TextAreaField({
   style,
   ...rest
 }) {
+  const styles = useStyles();
   const usados = String(value ?? '').trim().length;
 
   return (
@@ -48,7 +50,7 @@ export function TextAreaField({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { marginBottom: espacamentos.sm },
   rodape: {
     flexDirection: 'row',
@@ -60,4 +62,4 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   erro: { color: cores.perigo, flex: 1 },
   contador: { color: cores.textoSecundario },
-});
+}));

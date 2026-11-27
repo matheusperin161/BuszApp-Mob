@@ -3,11 +3,13 @@
  * Texto do app com as variações tipográficas já definidas no tema.
  *   titulo · subtitulo · corpo · legenda · secao (rótulo em CAIXA ALTA espaçada)
  */
-import { StyleSheet, Text } from 'react-native';
+import { Text } from 'react-native';
 
-import { cores, tipografia } from '../../theme';
+import { tipografia } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 
 export function Label({ children, variante = 'corpo', style, ...props }) {
+  const styles = useStyles();
   return (
     <Text style={[styles[variante], style]} {...props}>
       {children}
@@ -15,7 +17,7 @@ export function Label({ children, variante = 'corpo', style, ...props }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   titulo: {
     fontSize: tipografia.titulo,
     fontWeight: '800',
@@ -41,4 +43,4 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: cores.textoSecundario,
   },
-});
+}));

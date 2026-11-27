@@ -3,11 +3,12 @@
  * Avisos do sistema, do mais novo para o mais antigo.
  */
 import { useCallback } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import { extrairChave, listaVirtualizada } from '../../constants/lista';
 import { useEspacoInferior } from '../../navigation/espacoInferior';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
 import { EstadoCarga } from '../molecules/EstadoCarga';
@@ -22,6 +23,8 @@ export function NotificacaoList({
   onRefresh,
   refreshing,
 }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const espacoInferior = useEspacoInferior();
   const renderItem = useCallback(
     ({ item }) => <NotificacaoItem notificacao={item} novo={!item.read && Number(item.id) > ultimoVisto} />,
@@ -56,9 +59,9 @@ export function NotificacaoList({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(() => ({
   lista: { padding: espacamentos.md, paddingTop: espacamentos.lg, paddingBottom: espacamentos.xl, flexGrow: 1 },
   vazio: { alignItems: 'center', marginTop: espacamentos.xl, paddingHorizontal: espacamentos.lg },
   emoji: { marginBottom: espacamentos.md },
   centro: { textAlign: 'center' },
-});
+}));

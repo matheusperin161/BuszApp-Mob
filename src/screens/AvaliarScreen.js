@@ -4,7 +4,6 @@
  * já escolhidos (vindo do acompanhamento).
  */
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
 
 import { Button } from '../components/atoms/Button';
 import { Label } from '../components/atoms/Label';
@@ -17,10 +16,13 @@ import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { irParaAba } from '../navigation/acoes';
 import { enviarAvaliacao } from '../services/avaliacao';
 import { listarHorarios, listarLinhas } from '../services/linhas';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { hojeIso } from '../utils/formato';
 
 export function AvaliarScreen({ navigation, route }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [linhas, setLinhas] = useState(null);
   const [linha, setLinha] = useState(route.params?.linhaNumero ?? null);
   const [horarios, setHorarios] = useState([]);
@@ -152,9 +154,9 @@ export function AvaliarScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   centro: { alignItems: 'center', paddingVertical: espacamentos.xl },
   titulo: { marginTop: espacamentos.md, textAlign: 'center' },
   texto: { textAlign: 'center', marginTop: espacamentos.sm, color: cores.textoSecundario, fontSize: 16, lineHeight: 23 },
   outra: { marginTop: espacamentos.sm },
-});
+}));

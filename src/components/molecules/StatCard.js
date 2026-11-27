@@ -2,13 +2,15 @@
  * MOLECULE — StatCard
  * Número grande com ícone e rótulo (cartões de resumo do painel do admin no site).
  */
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { Label } from '../atoms/Label';
 import { IconeCaixa } from './IconeCaixa';
-import { cores, espacamentos, raios, sombra } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 
 export function StatCard({ icone, valor, rotulo, fundo, cor, onPress }) {
+  const styles = useStyles();
   return (
     <Pressable
       onPress={onPress}
@@ -27,7 +29,7 @@ export function StatCard({ icone, valor, rotulo, fundo, cor, onPress }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   card: {
     width: '48.3%',
     backgroundColor: cores.superficie,
@@ -38,4 +40,4 @@ const styles = StyleSheet.create({
   },
   pressionado: { opacity: 0.85 },
   valor: { fontSize: 26, fontWeight: '800', color: cores.texto, marginTop: espacamentos.sm },
-});
+}));

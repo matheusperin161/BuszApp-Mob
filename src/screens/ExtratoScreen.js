@@ -3,16 +3,17 @@
  * Todas as movimentações do cartão ("Ver todas" da Home).
  */
 import { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Cabecalho } from '../components/organisms/Cabecalho';
 import { TransacaoList } from '../components/organisms/TransacaoList';
 import { voltarAoLogin } from '../navigation/acoes';
 import { listarTransacoes } from '../services/cartao';
-import { cores } from '../theme';
+import { criarEstilos } from '../theme/tema';
 
 export function ExtratoScreen({ navigation }) {
+  const styles = useStyles();
   const [transacoes, setTransacoes] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -61,6 +62,6 @@ export function ExtratoScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   flex: { flex: 1, backgroundColor: cores.fundo },
-});
+}));

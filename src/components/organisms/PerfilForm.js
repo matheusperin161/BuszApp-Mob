@@ -4,14 +4,15 @@
  * "Alterar Senha" (em branco = mantém a atual). Salvar / Cancelar lado a lado.
  */
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '../atoms/Button';
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
 import { ErrorMessage } from '../molecules/ErrorMessage';
 import { FormField } from '../molecules/FormField';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import {
   LIMITES,
   erroVisivel,
@@ -22,6 +23,8 @@ import {
 } from '../../utils/validacao';
 
 export function PerfilForm({ usuario, onSubmit, carregando = false, erro = null }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [nome, setNome] = useState(usuario?.nome ?? '');
   const [email, setEmail] = useState(usuario?.login ?? '');
   const [senha, setSenha] = useState('');
@@ -129,7 +132,7 @@ export function PerfilForm({ usuario, onSubmit, carregando = false, erro = null 
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { width: '100%' },
   divisor: { height: 1, backgroundColor: cores.cinzaClaro, marginVertical: espacamentos.sm },
   secao: { flexDirection: 'row', alignItems: 'center', gap: espacamentos.sm, marginTop: espacamentos.sm },
@@ -137,4 +140,4 @@ const styles = StyleSheet.create({
   secaoAjuda: { marginTop: 2, marginBottom: espacamentos.md },
   botoes: { flexDirection: 'row', gap: espacamentos.sm + 4, marginTop: espacamentos.sm },
   flex: { flex: 1 },
-});
+}));

@@ -5,7 +5,7 @@
  * Cadastro pelo app é sempre de passageiro; motorista é cadastrado pelo admin no site.
  */
 import { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { Icone } from '../components/atoms/Icone';
 import { Label } from '../components/atoms/Label';
@@ -13,9 +13,11 @@ import { RegisterForm } from '../components/organisms/RegisterForm';
 import { TermosModal } from '../components/organisms/TermosModal';
 import { CenteredTemplate } from '../components/templates/CenteredTemplate';
 import { registrar } from '../services/auth';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos } from '../theme/tema';
 
 export function RegisterScreen({ navigation }) {
+  const styles = useStyles();
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
   const [termos, setTermos] = useState(false);
@@ -63,7 +65,7 @@ export function RegisterScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   rodape: { color: cores.textoSecundario, textAlign: 'center', fontSize: 15, marginTop: espacamentos.xs },
   link: { color: cores.link, fontWeight: '700', fontSize: 15 },
-});
+}));

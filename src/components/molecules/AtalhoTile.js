@@ -2,13 +2,15 @@
  * MOLECULE — AtalhoTile
  * Quadradinho branco da Home do site: ícone em degradê + rótulo âmbar escuro.
  */
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { Label } from '../atoms/Label';
 import { IconeCaixa } from './IconeCaixa';
-import { cores, espacamentos, raios, sombra } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 
 export function AtalhoTile({ icone, rotulo, onPress, badge }) {
+  const styles = useStyles();
   return (
     <Pressable
       onPress={onPress}
@@ -28,7 +30,7 @@ export function AtalhoTile({ icone, rotulo, onPress, badge }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   tile: {
     flex: 1,
     alignItems: 'center',
@@ -42,4 +44,4 @@ const styles = StyleSheet.create({
   pressionado: { transform: [{ scale: 0.97 }] },
   rotulo: { color: cores.rotuloAtalho, fontWeight: '700', fontSize: 15 },
   badge: { color: cores.textoSecundario, fontSize: 11, marginTop: -6 },
-});
+}));

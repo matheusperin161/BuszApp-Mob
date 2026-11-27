@@ -3,15 +3,18 @@
  * 5 estrelas tocáveis. valor 0 = não avaliado.
  * grande=true é a "Avaliação Geral"; o compacto vai na grade 2×2 dos critérios.
  */
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 const TEXTOS = ['Não avaliado', 'Muito ruim', 'Ruim', 'Regular', 'Boa', 'Excelente'];
 
 export function EstrelasCampo({ rotulo, valor, onChange, grande = false, mensagemErro, dica }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const tamanho = grande ? 42 : 26;
   return (
     <View style={[styles.container, grande && styles.grande]}>
@@ -29,7 +32,7 @@ export function EstrelasCampo({ rotulo, valor, onChange, grande = false, mensage
               <Icone
                 nome="star"
                 tamanho={tamanho}
-                cor={ativa ? cores.primaria : '#D1D5DB'}
+                cor={ativa ? cores.primaria : cores.estrelaVazia}
                 preenchido={ativa}
                 espessura={grande ? 1.6 : 1.8}
               />
@@ -49,11 +52,11 @@ export function EstrelasCampo({ rotulo, valor, onChange, grande = false, mensage
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { alignItems: 'center' },
   grande: { paddingVertical: espacamentos.xs },
   estrelas: { flexDirection: 'row', gap: 6 },
   texto: { marginTop: espacamentos.sm, textAlign: 'center' },
   textoGrande: { fontWeight: '600', color: cores.textoMedio, fontSize: 14 },
   erro: { color: cores.perigo, marginTop: espacamentos.xs },
-});
+}));

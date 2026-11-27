@@ -4,16 +4,17 @@
  * Ao abrir, os avisos contam como vistos e a bolinha do sino apaga.
  */
 import { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Cabecalho } from '../components/organisms/Cabecalho';
 import { NotificacaoList } from '../components/organisms/NotificacaoList';
 import { voltarAoLogin } from '../navigation/acoes';
 import { listarNotificacoes, marcarTodasComoVistas, ultimoIdVisto } from '../services/notificacoes';
-import { cores } from '../theme';
+import { criarEstilos } from '../theme/tema';
 
 export function NotificacoesScreen({ navigation }) {
+  const styles = useStyles();
   const [notificacoes, setNotificacoes] = useState([]);
   const [ultimoVisto, setUltimoVisto] = useState(Infinity);
   const [carregando, setCarregando] = useState(true);
@@ -67,6 +68,6 @@ export function NotificacoesScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   flex: { flex: 1, backgroundColor: cores.fundo },
-});
+}));

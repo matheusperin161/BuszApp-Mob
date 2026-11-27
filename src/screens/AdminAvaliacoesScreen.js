@@ -4,7 +4,7 @@
  * filtro por motorista e a lista com nota, linha, comentário e autor.
  */
 import { useCallback, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Icone } from '../components/atoms/Icone';
@@ -15,7 +15,8 @@ import { EstadoCarga } from '../components/molecules/EstadoCarga';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { voltarAoLogin } from '../navigation/acoes';
 import { avaliacoes } from '../services/admin';
-import { cores, espacamentos, raios, sombra } from '../theme';
+import { espacamentos, raios } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { dataCurta } from '../utils/formato';
 
 const TODOS = 'todos';
@@ -33,6 +34,8 @@ function media(lista, campo) {
 }
 
 function Estrelas({ nota }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   return (
     <View style={styles.estrelas}>
       {[1, 2, 3, 4, 5].map(n => (
@@ -40,7 +43,7 @@ function Estrelas({ nota }) {
           key={n}
           nome="star"
           tamanho={15}
-          cor={n <= nota ? cores.primaria : '#D1D5DB'}
+          cor={n <= nota ? cores.primaria : cores.estrelaVazia}
           preenchido={n <= nota}
         />
       ))}
@@ -49,6 +52,7 @@ function Estrelas({ nota }) {
 }
 
 export function AdminAvaliacoesScreen({ navigation }) {
+  const styles = useStyles();
   const [lista, setLista] = useState(null);
   const [motorista, setMotorista] = useState(TODOS);
   const [erro, setErro] = useState(null);
@@ -151,7 +155,7 @@ export function AdminAvaliacoesScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   estado: { minHeight: 240 },
   criterio: { flexDirection: 'row', alignItems: 'center', gap: espacamentos.sm, marginBottom: espacamentos.sm },
   criterioNome: { width: 100, color: cores.textoMedio },
@@ -171,4 +175,4 @@ const styles = StyleSheet.create({
   linha: { fontWeight: '700' },
   comentario: { color: cores.textoMedio, fontStyle: 'italic', lineHeight: 20 },
   vazio: { textAlign: 'center', marginTop: espacamentos.lg },
-});
+}));

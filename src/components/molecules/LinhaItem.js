@@ -4,11 +4,12 @@
  * círculo colorido com o número, nome, "Centro → Efapi" e a setinha âmbar.
  */
 import { memo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos, raios, sombra } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { dinheiro } from '../../utils/formato';
 
 // mesmas cores que o site sorteia para as linhas
@@ -22,6 +23,8 @@ export function corDaLinha(numero) {
 }
 
 export const LinhaItem = memo(function LinhaItem({ linha, onPress }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   return (
     <Pressable
       onPress={() => onPress(linha)}
@@ -55,7 +58,7 @@ export const LinhaItem = memo(function LinhaItem({ linha, onPress }) {
   );
 });
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -80,4 +83,4 @@ const styles = StyleSheet.create({
   textos: { flex: 1 },
   trajeto: { fontSize: 14, marginTop: 1 },
   extra: { marginTop: 2, color: cores.primariaTexto, fontWeight: '600', fontSize: 12 },
-});
+}));

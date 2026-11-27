@@ -2,12 +2,14 @@
  * ATOM — Avatar
  * Foto redonda com o aro laranja do site; sem foto, mostra o ícone de usuário.
  */
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, View } from 'react-native';
 
-import { cores } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { Icone } from './Icone';
 
 export function Avatar({ uri, nome, tamanho = 72, aro = true }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const borda = aro ? Math.max(2, Math.round(tamanho / 28)) : 0;
   const forma = { width: tamanho, height: tamanho, borderRadius: tamanho / 2 };
   const interno = tamanho - borda * 2;
@@ -27,7 +29,7 @@ export function Avatar({ uri, nome, tamanho = 72, aro = true }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   aro: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -35,4 +37,4 @@ const styles = StyleSheet.create({
     backgroundColor: cores.superficie,
     overflow: 'hidden',
   },
-});
+}));

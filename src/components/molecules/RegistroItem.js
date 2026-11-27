@@ -3,14 +3,16 @@
  * Linha de uma lista do admin: ícone/marcador, título, detalhes e um selo de status.
  */
 import { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Label } from '../atoms/Label';
 import { IconeCaixa } from './IconeCaixa';
 import { Selo } from './Selo';
-import { cores, espacamentos, raios, sombra } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 
 export const RegistroItem = memo(function RegistroItem({ icone, titulo, linhas = [], selo, direita }) {
+  const styles = useStyles();
   return (
     <View style={styles.item}>
       <IconeCaixa nome={icone} tamanho={42} />
@@ -30,7 +32,7 @@ export const RegistroItem = memo(function RegistroItem({ icone, titulo, linhas =
   );
 });
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -43,4 +45,4 @@ const styles = StyleSheet.create({
   },
   textos: { flex: 1 },
   titulo: { fontWeight: '700', fontSize: 15 },
-});
+}));

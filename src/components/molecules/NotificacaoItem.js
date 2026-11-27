@@ -4,26 +4,29 @@
  * novo (chegou depois da última visita) = barrinha laranja à esquerda, como no site.
  */
 import { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Label } from '../atoms/Label';
 import { IconeCaixa } from './IconeCaixa';
-import { cores, espacamentos, raios, sombra } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { tempoRelativo } from '../../utils/formato';
 
-function visualDoTitulo(titulo = '') {
+function visualDoTitulo(cores, titulo = '') {
   const t = titulo.toLowerCase();
   if (t.includes('recarga')) return { nome: 'dollar-sign', fundo: cores.sucessoFundo, cor: cores.sucesso };
   if (t.includes('saldo')) return { nome: 'alert-triangle', fundo: cores.superficieAlt, cor: cores.primariaEscura };
   if (t.includes('cartão') || t.includes('cartao')) return { nome: 'credit-card', fundo: cores.roxoFundo, cor: cores.roxo };
-  if (t.includes('atraso')) return { nome: 'clock', fundo: '#FFEDD5', cor: cores.destaque };
+  if (t.includes('atraso')) return { nome: 'clock', fundo: cores.laranjaFundo, cor: cores.destaque };
   if (t.includes('pane') || t.includes('acidente') || t.includes('ocorr'))
     return { nome: 'alert-circle', fundo: cores.perigoFundo, cor: cores.perigo };
   return { nome: 'bell', fundo: cores.superficieAlt, cor: cores.primariaEscura };
 }
 
 export const NotificacaoItem = memo(function NotificacaoItem({ notificacao, novo = false }) {
-  const visual = visualDoTitulo(notificacao.title);
+  const styles = useStyles();
+  const { cores } = useTema();
+  const visual = visualDoTitulo(cores, notificacao.title);
   return (
     <View style={[styles.item, novo && styles.naoLida]}>
       <IconeCaixa {...visual} tamanho={42} redondo />
@@ -42,7 +45,7 @@ export const NotificacaoItem = memo(function NotificacaoItem({ notificacao, novo
   );
 });
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   item: {
     flexDirection: 'row',
     backgroundColor: cores.superficie,
@@ -54,10 +57,10 @@ const styles = StyleSheet.create({
     borderLeftColor: 'transparent',
     ...sombra,
   },
-  naoLida: { borderLeftColor: cores.destaque, backgroundColor: '#FFFDF7' },
+  naoLida: { borderLeftColor: cores.destaque, backgroundColor: cores.realce },
   textos: { flex: 1 },
   topo: { flexDirection: 'row', justifyContent: 'space-between', gap: espacamentos.sm },
   titulo: { flex: 1, fontSize: 15, fontWeight: '700' },
   quando: { fontSize: 12 },
   mensagem: { marginTop: 3, color: cores.textoSecundario, fontSize: 14, lineHeight: 20 },
-});
+}));

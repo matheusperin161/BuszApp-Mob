@@ -10,9 +10,10 @@
  * secureTextEntry ganha o "olho" para mostrar/ocultar a senha.
  */
 import { forwardRef, useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, TextInput, View } from 'react-native';
 
-import { cores, espacamentos, raios, tipografia } from '../../theme';
+import { espacamentos, raios, tipografia } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { Icone } from './Icone';
 
 export const Input = forwardRef(function Input(
@@ -29,6 +30,8 @@ export const Input = forwardRef(function Input(
   },
   ref,
 ) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [focado, setFocado] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const senha = Boolean(secureTextEntry);
@@ -73,7 +76,7 @@ export const Input = forwardRef(function Input(
   );
 });
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   caixa: {
     minHeight: 52,
     flexDirection: 'row',
@@ -95,4 +98,4 @@ const styles = StyleSheet.create({
     paddingVertical: espacamentos.sm,
   },
   olho: { marginLeft: espacamentos.sm },
-});
+}));

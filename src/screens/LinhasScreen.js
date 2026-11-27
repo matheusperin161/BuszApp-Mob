@@ -3,7 +3,7 @@
  * "Linhas Disponíveis" do site, com busca por número ou bairro (melhoria do app).
  */
 import { useCallback, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Input } from '../components/atoms/Input';
@@ -12,7 +12,8 @@ import { Cabecalho } from '../components/organisms/Cabecalho';
 import { LinhaList } from '../components/organisms/LinhaList';
 import { voltarAoLogin } from '../navigation/acoes';
 import { carregarLinhasCompletas } from '../services/linhas';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos } from '../theme/tema';
 
 function normalizar(texto) {
   return String(texto ?? '')
@@ -22,6 +23,7 @@ function normalizar(texto) {
 }
 
 export function LinhasScreen({ navigation }) {
+  const styles = useStyles();
   const [linhas, setLinhas] = useState([]);
   const [busca, setBusca] = useState('');
   const [carregando, setCarregando] = useState(true);
@@ -83,7 +85,7 @@ export function LinhasScreen({ navigation }) {
         />
       </View>
     ),
-    [busca],
+    [busca, styles],
   );
 
   return (
@@ -109,10 +111,10 @@ export function LinhasScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   flex: { flex: 1, backgroundColor: cores.fundo },
   titulos: { marginBottom: espacamentos.md, paddingHorizontal: espacamentos.xs },
   titulo: { fontSize: 28 },
   subtitulo: { color: cores.textoSecundario, marginTop: 4, fontSize: 15 },
   busca: { marginBottom: espacamentos.lg, backgroundColor: cores.superficie },
-});
+}));

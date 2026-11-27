@@ -3,14 +3,17 @@
  * Três estados de uma tela que fala com a API:
  * carregando (spinner), erro (faixa + retry), ou nada (o pai pinta os dados).
  */
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { Button } from '../atoms/Button';
 import { Label } from '../atoms/Label';
 import { ErrorMessage } from './ErrorMessage';
 
 export function EstadoCarga({ carregando, erro, onTentarDeNovo }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   if (carregando) {
     return (
       <View style={styles.centro}>
@@ -36,7 +39,7 @@ export function EstadoCarga({ carregando, erro, onTentarDeNovo }) {
   return null;
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   centro: {
     flex: 1,
     alignItems: 'center',
@@ -51,4 +54,4 @@ const styles = StyleSheet.create({
     backgroundColor: cores.fundo,
   },
   texto: { marginTop: espacamentos.md },
-});
+}));

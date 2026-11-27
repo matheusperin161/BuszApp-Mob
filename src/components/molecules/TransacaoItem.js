@@ -5,14 +5,17 @@
  * memo: a lista não redesenha itens que não mudaram.
  */
 import { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { dataHora, dinheiro } from '../../utils/formato';
 
 export const TransacaoItem = memo(function TransacaoItem({ transacao, ultima = false }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const entrada = transacao.transaction_type === 'recharge';
   const cor = entrada ? cores.sucesso : cores.perigo;
 
@@ -31,7 +34,7 @@ export const TransacaoItem = memo(function TransacaoItem({ transacao, ultima = f
   );
 });
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -41,4 +44,4 @@ const styles = StyleSheet.create({
   divisor: { borderBottomWidth: 1, borderBottomColor: cores.cinzaClaro },
   textos: { flex: 1 },
   valor: { fontWeight: '700', fontSize: 16 },
-});
+}));

@@ -7,7 +7,7 @@
  * O horário importa: é por ele que o passageiro acompanha (site e app).
  */
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { Button } from '../atoms/Button';
 import { Icone } from '../atoms/Icone';
@@ -17,7 +17,8 @@ import { ErrorMessage } from '../molecules/ErrorMessage';
 import { HorarioItem } from '../molecules/HorarioItem';
 import { corDaLinha } from '../molecules/LinhaItem';
 import { SeletorBusca } from '../molecules/SeletorBusca';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 export function TrajetoForm({
   linhas,
@@ -30,6 +31,8 @@ export function TrajetoForm({
   carregando = false,
   erro = null,
 }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [horarioId, setHorarioId] = useState(null);
   const horario = (horarios || []).find(h => h.id === horarioId) ?? null;
 
@@ -104,9 +107,9 @@ export function TrajetoForm({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(() => ({
   container: { width: '100%' },
   titulo: { marginBottom: espacamentos.md },
   vazio: { alignItems: 'center', gap: espacamentos.sm, paddingVertical: espacamentos.lg },
   botao: { minHeight: 58, marginBottom: espacamentos.md },
-});
+}));

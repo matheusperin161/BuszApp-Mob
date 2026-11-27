@@ -4,7 +4,7 @@
  * e aceite dos Termos de Serviço — os mesmos campos do cadastro do site.
  */
 import { useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Button } from '../atoms/Button';
 import { Checkbox } from '../atoms/Checkbox';
@@ -12,7 +12,8 @@ import { Label } from '../atoms/Label';
 import { ErrorMessage } from '../molecules/ErrorMessage';
 import { ForcaSenha } from '../molecules/ForcaSenha';
 import { FormField } from '../molecules/FormField';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 import {
   LIMITES,
   erroVisivel,
@@ -24,6 +25,7 @@ import {
 } from '../../utils/validacao';
 
 export function RegisterForm({ onSubmit, onVerTermos, carregando = false, erro = null }) {
+  const styles = useStyles();
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -157,10 +159,10 @@ export function RegisterForm({ onSubmit, onVerTermos, carregando = false, erro =
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { width: '100%' },
   termos: { color: cores.textoMedio, fontSize: 15 },
   link: { color: cores.link, fontWeight: '600', fontSize: 15 },
   erro: { color: cores.perigo, marginTop: espacamentos.xs },
   botao: { marginTop: espacamentos.lg },
-});
+}));

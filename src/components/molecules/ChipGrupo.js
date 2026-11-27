@@ -3,11 +3,12 @@
  * Rótulo + fileira de Chips (escolha única). horizontal=true rola de lado.
  * Faz o papel dos <select> do site, mas com tudo à vista (um toque só).
  */
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Chip } from '../atoms/Chip';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 
 export function ChipGrupo({
   label,
@@ -19,6 +20,7 @@ export function ChipGrupo({
   desabilitado = false,
   vazio,
 }) {
+  const styles = useStyles();
   const chips = opcoes.map(opcao => (
     <Chip
       key={String(opcao.id)}
@@ -54,10 +56,10 @@ export function ChipGrupo({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { marginBottom: espacamentos.md },
   label: { marginBottom: espacamentos.sm, letterSpacing: 1 },
   linha: { flexDirection: 'row', gap: espacamentos.sm },
   quebra: { flexWrap: 'wrap' },
   erro: { color: cores.perigo, marginTop: espacamentos.xs },
-});
+}));

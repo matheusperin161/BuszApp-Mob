@@ -2,14 +2,15 @@
  * MOLECULE — ForcaSenha
  * Quatro barrinhas abaixo do campo de senha do cadastro (igual ao site).
  */
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Label } from '../atoms/Label';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { forcaSenha } from '../../utils/validacao';
 
 const NIVEIS = [
-  { cor: cores.bordaNeutra, texto: '' },
+  { cor: null, texto: '' },
   { cor: '#EF4444', texto: 'Fraca' },
   { cor: '#F97316', texto: 'Razoável' },
   { cor: '#EAB308', texto: 'Boa' },
@@ -17,6 +18,8 @@ const NIVEIS = [
 ];
 
 export function ForcaSenha({ senha }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const nivel = forcaSenha(senha);
   return (
     <View style={styles.container}>
@@ -37,8 +40,8 @@ export function ForcaSenha({ senha }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(() => ({
   container: { marginTop: -espacamentos.sm, marginBottom: espacamentos.md },
   barras: { flexDirection: 'row', gap: 6, marginBottom: 4 },
   barra: { flex: 1, height: 4, borderRadius: 2 },
-});
+}));

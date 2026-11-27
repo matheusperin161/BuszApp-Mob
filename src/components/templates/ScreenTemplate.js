@@ -12,14 +12,14 @@ import {
   Platform,
   RefreshControl,
   ScrollView,
-  StyleSheet,
   View,
 } from 'react-native';
 
 import { useEspacoInferior } from '../../navigation/espacoInferior';
 import { Label } from '../atoms/Label';
 import { Cabecalho } from '../organisms/Cabecalho';
-import { cores, espacamentos } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 export function ScreenTemplate({
   cabecalho = {},
@@ -30,6 +30,8 @@ export function ScreenTemplate({
   onRefresh,
   refreshing = false,
 }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const espacoInferior = useEspacoInferior();
   return (
     <View style={styles.tela}>
@@ -68,7 +70,7 @@ export function ScreenTemplate({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   tela: { flex: 1, backgroundColor: cores.fundo },
   flex: { flex: 1 },
   conteudo: {
@@ -80,4 +82,4 @@ const styles = StyleSheet.create({
   cabecalhoPagina: { marginBottom: espacamentos.lg, paddingHorizontal: espacamentos.xs },
   subtitulo: { marginTop: espacamentos.xs, color: cores.textoSecundario, fontSize: 15 },
   rodape: { marginTop: 'auto', paddingTop: espacamentos.lg },
-});
+}));

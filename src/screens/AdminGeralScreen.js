@@ -4,7 +4,7 @@
  * linhas, recargas e avaliações. Toque num número para abrir o detalhe.
  */
 import { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Label } from '../components/atoms/Label';
@@ -25,7 +25,8 @@ import {
   veiculos,
 } from '../services/admin';
 import { obterSessao } from '../services/auth';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { dinheiro } from '../utils/formato';
 
 function media(lista, campo) {
@@ -34,6 +35,8 @@ function media(lista, campo) {
 }
 
 export function AdminGeralScreen({ navigation }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [dados, setDados] = useState(null);
   const [nome, setNome] = useState('');
   const [erro, setErro] = useState(null);
@@ -201,7 +204,7 @@ export function AdminGeralScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   grade: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -213,4 +216,4 @@ const styles = StyleSheet.create({
   numero: { flex: 1 },
   numeroRotulo: { fontSize: 10, letterSpacing: 1.2 },
   numeroValor: { fontSize: 20, fontWeight: '800', color: cores.texto, marginTop: 2 },
-});
+}));

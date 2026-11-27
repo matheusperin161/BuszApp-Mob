@@ -3,16 +3,17 @@
  * O cartão branco das telas do site (cantos de 24px, borda âmbar bem clara, sombra leve).
  * titulo + icone (opcional) montam o cabeçalho "Últimas transações ........ Ver todas".
  */
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
-import { cores, espacamentos, raios, sombra } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
 
 export function Card({
   titulo,
   icone,
-  corIcone = cores.primaria,
+  corIcone,
   obrigatorio = false,
   acao,
   onAcao,
@@ -21,6 +22,8 @@ export function Card({
   style,
   semPadding = false,
 }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const Wrapper = onPress ? Pressable : View;
   return (
     <Wrapper
@@ -29,7 +32,7 @@ export function Card({
       accessibilityRole={onPress ? 'button' : undefined}>
       {titulo ? (
         <View style={styles.cabecalho}>
-          {icone ? <Icone nome={icone} cor={corIcone} tamanho={22} /> : null}
+          {icone ? <Icone nome={icone} cor={corIcone ?? cores.primaria} tamanho={22} /> : null}
           <Label variante="subtitulo" style={styles.titulo}>
             {titulo}
             {obrigatorio ? <Label style={styles.obrigatorio}> *</Label> : null}
@@ -46,7 +49,7 @@ export function Card({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   card: {
     backgroundColor: cores.superficie,
     borderRadius: raios.xl,
@@ -66,4 +69,4 @@ const styles = StyleSheet.create({
   titulo: { flex: 1 },
   obrigatorio: { color: cores.perigo, fontWeight: '700' },
   acao: { color: cores.textoSecundario, fontWeight: '600' },
-});
+}));

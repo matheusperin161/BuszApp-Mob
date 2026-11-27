@@ -5,7 +5,7 @@
  * A foto vai para o backend — é a mesma do site.
  */
 import { useCallback, useState } from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Avatar } from '../components/atoms/Avatar';
@@ -22,7 +22,8 @@ import { irParaAba, voltarAoLogin } from '../navigation/acoes';
 import { atualizarSessao, logout, obterSessao } from '../services/auth';
 import { capturarFoto, escolherImagem } from '../services/nativos';
 import { atualizarPerfil, enviarFoto, removerFoto, urlDaFoto } from '../services/usuario';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos } from '../theme/tema';
 import { lerDataApi } from '../utils/formato';
 
 const PERFIS = { user: 'Usuário', motorista: 'Motorista', admin: 'Administrador' };
@@ -37,6 +38,7 @@ function membroDesde(texto) {
 }
 
 export function ProfileScreen({ navigation }) {
+  const styles = useStyles();
   const [usuario, setUsuario] = useState(null);
   const [ocupado, setOcupado] = useState(null);
   const [erroFoto, setErroFoto] = useState(null);
@@ -196,7 +198,7 @@ export function ProfileScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   topo: { alignItems: 'center', paddingVertical: espacamentos.xl },
   camera: {
     position: 'absolute',
@@ -215,4 +217,4 @@ const styles = StyleSheet.create({
   email: { color: cores.textoSecundario, marginTop: 2, fontSize: 16 },
   selos: { flexDirection: 'row', gap: espacamentos.sm, marginTop: espacamentos.md },
   desde: { marginTop: espacamentos.sm },
-});
+}));

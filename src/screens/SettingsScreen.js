@@ -3,9 +3,10 @@
  * Preferências no AsyncStorage. Sobrevivem ao logout.
  */
 import { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Switch, View } from 'react-native';
+import { Alert, Pressable, Switch, View } from 'react-native';
 
 import { Button } from '../components/atoms/Button';
+import { Icone } from '../components/atoms/Icone';
 import { Label } from '../components/atoms/Label';
 import { Card } from '../components/molecules/Card';
 import { ErrorMessage } from '../components/molecules/ErrorMessage';
@@ -18,11 +19,20 @@ import {
   pedirPermissaoNotificacao,
 } from '../services/nativos';
 import { obterPreferencias, salvarPreferencias } from '../services/preferencias';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 
-const VERSAO = '1.0.0';
+const VERSAO = '1.1.0';
+
+const APARENCIA = [
+  { id: 'sistema', rotulo: 'Sistema', icone: 'monitor', descricao: 'Segue o celular' },
+  { id: 'claro', rotulo: 'Claro', icone: 'sun', descricao: 'Creme e âmbar' },
+  { id: 'escuro', rotulo: 'Escuro', icone: 'moon', descricao: 'Modo black' },
+];
 
 export function SettingsScreen() {
+  const styles = useStyles();
+  const { cores, modo, setModo } = useTema();
   const [prefs, setPrefs] = useState(null);
   const [ocupado, setOcupado] = useState(false);
   const [erro, setErro] = useState(null);
@@ -80,6 +90,28 @@ export function SettingsScreen() {
     <ScreenTemplate
       cabecalho={{ titulo: 'Configurações', subtitulo: 'Salvas neste aparelho', voltar: true }}>
       <ErrorMessage mensagem={erro} />
+      <Card titulo="Aparência" icone="moon">
+        <View style={styles.temas}>
+          {APARENCIA.map(op => {
+            const ativo = modo === op.id;
+            return (
+              <Pressable
+                key={op.id}
+                onPress={() => setModo(op.id)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: ativo }}
+                accessibilityLabel={`Tema ${op.rotulo}`}
+                style={[styles.tema, ativo && styles.temaAtivo]}>
+                <Icone nome={op.icone} cor={ativo ? cores.primaria : cores.textoSecundario} tamanho={24} />
+                <Label style={[styles.temaRotulo, ativo && styles.temaRotuloAtivo]}>{op.rotulo}</Label>
+                <Label variante="legenda" style={styles.temaDescricao}>
+                  {op.descricao}
+                </Label>
+              </Pressable>
+            );
+          })}
+        </View>
+      </Card>
       <Card titulo="Preferências" icone="settings">
         {opcoes.map((opcao, i) => (
           <View key={opcao.id} style={[styles.linha, i < opcoes.length - 1 && styles.divisor]}>
@@ -117,7 +149,7 @@ export function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   linha: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -125,7 +157,23 @@ const styles = StyleSheet.create({
     paddingVertical: espacamentos.sm + 4,
   },
   divisor: { borderBottomWidth: 1, borderBottomColor: cores.cinzaClaro },
+  temas: { flexDirection: 'row', gap: espacamentos.sm },
+  tema: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: espacamentos.md,
+    paddingHorizontal: espacamentos.xs,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: cores.bordaNeutra,
+    backgroundColor: cores.fundo,
+  },
+  temaAtivo: { borderColor: cores.primaria, backgroundColor: cores.superficieAlt },
+  temaRotulo: { fontWeight: '700', color: cores.textoMedio, marginTop: 2 },
+  temaRotuloAtivo: { color: cores.texto },
+  temaDescricao: { fontSize: 11, textAlign: 'center' },
   textos: { flex: 1, marginRight: espacamentos.md },
   opcaoTitulo: { fontWeight: '700', fontSize: 16 },
   botao: { marginBottom: espacamentos.md },
-});
+}));

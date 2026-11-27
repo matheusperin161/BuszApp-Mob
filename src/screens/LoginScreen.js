@@ -5,7 +5,7 @@
  * 3. Entram passageiro, motorista e administrador (cada um vê as abas do seu perfil).
  */
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, StatusBar, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, StatusBar, View } from 'react-native';
 
 import { Button } from '../components/atoms/Button';
 import { Gradiente } from '../components/atoms/Gradiente';
@@ -14,11 +14,14 @@ import { AvisoBox } from '../components/molecules/AvisoBox';
 import { LoginForm } from '../components/organisms/LoginForm';
 import { CenteredTemplate } from '../components/templates/CenteredTemplate';
 import { login, reenviarVerificacao, sessaoAtiva } from '../services/auth';
-import { cores, espacamentos, gradientes } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 
 const LOGO = require('../assets/logo.png');
 
 export function LoginScreen({ navigation, route }) {
+  const styles = useStyles();
+  const { gradientes } = useTema();
   const [verificandoSessao, setVerificandoSessao] = useState(true);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
@@ -132,7 +135,7 @@ export function LoginScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   splash: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: cores.primaria },
   splashLogo: {
     width: 132,
@@ -148,4 +151,4 @@ const styles = StyleSheet.create({
   reenviar: { marginTop: espacamentos.sm, minHeight: 44 },
   rodape: { color: cores.textoSecundario, textAlign: 'center', fontSize: 15, lineHeight: 22 },
   link: { color: cores.link, fontWeight: '700', fontSize: 15 },
-});
+}));

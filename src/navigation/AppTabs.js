@@ -7,7 +7,7 @@
  */
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Icone } from '../components/atoms/Icone';
@@ -22,7 +22,7 @@ import { LinhasScreen } from '../screens/LinhasScreen';
 import { MotoristaScreen } from '../screens/MotoristaScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { logout, obterSessao, PERFIS_DO_APP } from '../services/auth';
-import { cores } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { voltarAoLogin } from './acoes';
 
 const Tabs = createBottomTabNavigator();
@@ -32,6 +32,8 @@ function icone(nome) {
 }
 
 export function AppTabs({ navigation }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [usuario, setUsuario] = useState(null);
   const insets = useSafeAreaInsets();
 
@@ -126,6 +128,6 @@ export function AppTabs({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   carregando: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: cores.fundo },
-});
+}));

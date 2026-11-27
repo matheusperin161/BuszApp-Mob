@@ -10,7 +10,7 @@
  * mapa, horários e a lista de paradas.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Button } from '../components/atoms/Button';
@@ -33,7 +33,8 @@ import {
   viagensAtivas,
 } from '../services/linhas';
 import { obterPreferencias, salvarPreferencias } from '../services/preferencias';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { distancia, hora } from '../utils/formato';
 
 function minutosDoDia(hhmm) {
@@ -56,6 +57,8 @@ function textoEta(minutos) {
 }
 
 export function AcompanhamentoScreen({ navigation, route }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const linha = route.params?.linha;
   const [paradas, setParadas] = useState(linha?.paradas ?? []);
   const [rastreioId, setRastreioId] = useState(linha?.rastreioId ?? null);
@@ -404,7 +407,7 @@ export function AcompanhamentoScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   flex: { flex: 1 },
   quadro: { paddingVertical: espacamentos.md },
   quadroLinha: { flexDirection: 'row', gap: espacamentos.md },
@@ -449,4 +452,4 @@ const styles = StyleSheet.create({
   },
   atualizar: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   atualizarTexto: { color: cores.primariaTexto, fontWeight: '700' },
-});
+}));

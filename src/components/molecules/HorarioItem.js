@@ -5,19 +5,23 @@
  * Selecionado = borda âmbar.
  */
 import { memo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { Label } from '../atoms/Label';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 const PERIODOS = {
-  'Manhã': { fundo: '#FEF3C7', cor: '#B45309' },
-  Tarde: { fundo: '#FFEDD5', cor: '#C2410C' },
-  Noite: { fundo: '#EDE9FE', cor: '#6D28D9' },
+  'Manhã': { fundo: '#FEF3C7', cor: '#B45309', fundoEscuro: '#422006', corEscura: '#FDE68A' },
+  Tarde: { fundo: '#FFEDD5', cor: '#C2410C', fundoEscuro: '#431407', corEscura: '#FDBA74' },
+  Noite: { fundo: '#EDE9FE', cor: '#6D28D9', fundoEscuro: '#2E1065', corEscura: '#C4B5FD' },
 };
 
 export const HorarioItem = memo(function HorarioItem({ horario, selecionado, onPress, desabilitado = false }) {
-  const periodo = PERIODOS[horario.period] ?? PERIODOS['Manhã'];
+  const styles = useStyles();
+  const { escuro } = useTema();
+  const base = PERIODOS[horario.period] ?? PERIODOS['Manhã'];
+  const periodo = escuro ? { fundo: base.fundoEscuro, cor: base.corEscura } : base;
   return (
     <Pressable
       onPress={() => onPress(horario)}
@@ -42,7 +46,7 @@ export const HorarioItem = memo(function HorarioItem({ horario, selecionado, onP
   );
 });
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -63,4 +67,4 @@ const styles = StyleSheet.create({
   onibus: { color: cores.textoSecundario, marginTop: 2, fontSize: 15 },
   periodo: { borderRadius: raios.pilula, paddingHorizontal: espacamentos.md, paddingVertical: 6 },
   periodoTexto: { fontWeight: '700', fontSize: 14 },
-});
+}));

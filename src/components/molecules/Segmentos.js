@@ -3,13 +3,16 @@
  * Abas internas roláveis (Motoristas · Frota · Rotas · Cartões), como os botões
  * de aba do painel do admin no site.
  */
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView } from 'react-native';
 
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 export function Segmentos({ opcoes, valor, onChange }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   return (
     <ScrollView
       horizontal
@@ -34,7 +37,7 @@ export function Segmentos({ opcoes, valor, onChange }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   // sem isto a fileira estica na altura da tela (ScrollView dentro de ScrollView)
   rolagem: { flexGrow: 0, marginBottom: espacamentos.md },
   linha: { gap: espacamentos.sm, alignItems: 'center' },
@@ -53,4 +56,4 @@ const styles = StyleSheet.create({
   ativo: { backgroundColor: cores.primaria, borderColor: cores.primaria },
   texto: { fontWeight: '600', color: cores.textoMedio },
   textoAtivo: { color: '#FFFFFF' },
-});
+}));

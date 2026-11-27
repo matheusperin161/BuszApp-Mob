@@ -4,11 +4,12 @@
  * ListHeaderComponent — a tela inteira rola como uma lista só.
  */
 import { useCallback } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import { extrairChave, listaVirtualizada } from '../../constants/lista';
 import { useEspacoInferior } from '../../navigation/espacoInferior';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 import { Label } from '../atoms/Label';
 import { EstadoCarga } from '../molecules/EstadoCarga';
 import { TransacaoItem } from '../molecules/TransacaoItem';
@@ -22,6 +23,7 @@ export function TransacaoList({
   refreshing,
   ListHeaderComponent,
 }) {
+  const styles = useStyles();
   const espacoInferior = useEspacoInferior();
   const total = transacoes?.length ?? 0;
   // os itens formam um único card branco: arredonda só o primeiro e o último
@@ -36,7 +38,7 @@ export function TransacaoList({
         <TransacaoItem transacao={item} ultima={index === total - 1} />
       </View>
     ),
-    [total],
+    [styles, total],
   );
 
   return (
@@ -62,10 +64,10 @@ export function TransacaoList({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   lista: { padding: espacamentos.md, paddingTop: espacamentos.lg, paddingBottom: espacamentos.xl, flexGrow: 1 },
   vazio: { textAlign: 'center', marginTop: espacamentos.md },
   fatia: { backgroundColor: cores.superficie, paddingHorizontal: espacamentos.lg },
   primeira: { borderTopLeftRadius: raios.xl, borderTopRightRadius: raios.xl, paddingTop: espacamentos.sm },
   ultima: { borderBottomLeftRadius: raios.xl, borderBottomRightRadius: raios.xl, paddingBottom: espacamentos.sm },
-});
+}));

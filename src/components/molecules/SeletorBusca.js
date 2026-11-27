@@ -5,13 +5,14 @@
  *   opcoes: [{ id, rotulo, detalhe?, marcador? }]   marcador = texto do círculo (nº da linha)
  */
 import { useMemo, useState } from 'react';
-import { FlatList, Modal, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Modal, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Icone } from '../atoms/Icone';
 import { Input } from '../atoms/Input';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 function normalizar(texto) {
   return String(texto ?? '')
@@ -33,6 +34,8 @@ export function SeletorBusca({
   mensagemErro,
   vazio = 'Nada encontrado.',
 }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [aberto, setAberto] = useState(false);
   const [busca, setBusca] = useState('');
   const insets = useSafeAreaInsets();
@@ -153,7 +156,7 @@ export function SeletorBusca({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: { marginBottom: espacamentos.sm },
   label: { marginBottom: espacamentos.sm, fontWeight: '600', color: cores.textoMedio },
   campo: {
@@ -173,7 +176,7 @@ const styles = StyleSheet.create({
   valor: { flex: 1, fontSize: 16, color: cores.texto },
   placeholder: { color: cores.textoSecundario },
   erro: { color: cores.perigo, marginTop: espacamentos.xs },
-  fundo: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
+  fundo: { flex: 1, backgroundColor: cores.sobreposicao, justifyContent: 'flex-end' },
   folha: {
     backgroundColor: cores.superficie,
     borderTopLeftRadius: raios.xl,
@@ -207,4 +210,4 @@ const styles = StyleSheet.create({
   marcador: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 },
   marcadorTexto: { color: '#FFFFFF', fontWeight: '800', fontSize: 15 },
   opcaoTexto: { fontSize: 16, fontWeight: '600' },
-});
+}));

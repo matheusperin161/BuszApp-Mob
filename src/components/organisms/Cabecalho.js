@@ -3,11 +3,11 @@
  * A barra em degradê do topo do site, com a mesma lógica:
  *   - tela principal: "BuszApp" (+ subtítulo opcional, ex. "Painel do Motorista")
  *   - tela interna: seta de voltar + título + subtítulo
- *   - à direita: sino (com bolinha vermelha se há aviso novo) e atalho do perfil
+ *   - à direita: lua/sol (modo escuro), sino (bolinha vermelha = aviso novo) e perfil
  * Usa a navegação diretamente para não obrigar toda tela a repassar callbacks.
  */
 import { useCallback, useState } from 'react';
-import { Pressable, StatusBar, StyleSheet, View } from 'react-native';
+import { Pressable, StatusBar, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -16,9 +16,12 @@ import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
 import { irParaAba } from '../../navigation/acoes';
 import { contarNaoVistas } from '../../services/notificacoes';
-import { cores, espacamentos, gradientes } from '../../theme';
+import { espacamentos } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 function BotaoIcone({ nome, onPress, rotulo, bolinha = false }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   return (
     <Pressable
       onPress={onPress}
@@ -33,6 +36,8 @@ function BotaoIcone({ nome, onPress, rotulo, bolinha = false }) {
 }
 
 export function Cabecalho({ titulo, subtitulo, voltar = false, direita, semAcoes = false }) {
+  const styles = useStyles();
+  const { cores, gradientes, escuro, setModo } = useTema();
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [novos, setNovos] = useState(0);
@@ -80,6 +85,12 @@ export function Cabecalho({ titulo, subtitulo, voltar = false, direita, semAcoes
       {direita}
       {semAcoes ? null : (
         <View style={styles.acoes}>
+          {/* lua/sol: troca o tema na hora, como o botão do site */}
+          <BotaoIcone
+            nome={escuro ? 'sun' : 'moon'}
+            rotulo={escuro ? 'Usar modo claro' : 'Usar modo escuro'}
+            onPress={() => setModo(escuro ? 'claro' : 'escuro')}
+          />
           <BotaoIcone
             nome="bell"
             rotulo={novos ? `Avisos, ${novos} novos` : 'Avisos'}
@@ -93,7 +104,7 @@ export function Cabecalho({ titulo, subtitulo, voltar = false, direita, semAcoes
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   barra: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -128,4 +139,4 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: cores.primaria,
   },
-});
+}));

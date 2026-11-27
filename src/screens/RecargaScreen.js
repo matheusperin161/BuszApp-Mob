@@ -4,7 +4,7 @@
  * Obs.: o backend ainda aprova a recarga na hora (pagamento simulado).
  */
 import { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Button } from '../components/atoms/Button';
@@ -18,12 +18,15 @@ import { RecargaForm } from '../components/organisms/RecargaForm';
 import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { irParaAba } from '../navigation/acoes';
 import { obterCartao, recarregar } from '../services/cartao';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { dataHora, dinheiro } from '../utils/formato';
 
 const CABECALHO = { titulo: 'Recarregar', subtitulo: 'Adicionar saldo ao cartão', voltar: true };
 
 export function RecargaScreen({ navigation }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [cartao, setCartao] = useState(null);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
@@ -107,10 +110,10 @@ export function RecargaScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   sucesso: { alignItems: 'center', paddingVertical: espacamentos.xl },
   sucessoTitulo: { marginTop: espacamentos.md },
   sucessoTexto: { color: cores.textoSecundario, marginTop: 4, fontSize: 16 },
   botoes: { gap: espacamentos.sm },
   botaoAviso: { marginTop: espacamentos.sm, minHeight: 44 },
-});
+}));

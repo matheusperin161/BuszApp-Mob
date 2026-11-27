@@ -3,11 +3,13 @@
  * Opção selecionável pequena (valor de recarga, horário, tipo de cartão).
  * Desmarcado: creme com borda âmbar (igual aos campos do site). Marcado: âmbar cheio.
  */
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 
-import { cores, espacamentos, raios, tipografia } from '../../theme';
+import { espacamentos, raios, tipografia } from '../../theme';
+import { criarEstilos } from '../../theme/tema';
 
 export function Chip({ rotulo, selecionado = false, onPress, desabilitado = false, style }) {
+  const styles = useStyles();
   return (
     <Pressable
       onPress={onPress}
@@ -26,7 +28,7 @@ export function Chip({ rotulo, selecionado = false, onPress, desabilitado = fals
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   base: {
     minHeight: 42,
     paddingHorizontal: espacamentos.md,
@@ -42,4 +44,4 @@ const styles = StyleSheet.create({
   inativo: { opacity: 0.4 },
   texto: { fontSize: tipografia.corpo, fontWeight: '600', color: cores.textoMedio },
   textoSelecionado: { color: '#FFFFFF' },
-});
+}));

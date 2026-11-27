@@ -14,17 +14,21 @@ import { WebView } from 'react-native-webview';
 
 import { Label } from '../atoms/Label';
 import { API_BASE_URL } from '../../services/config';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 const CENTRO_CHAPECO = [-27.1, -52.615];
 
-const HTML = `<!DOCTYPE html>
+function montarHtml(escuro) {
+  return `<!DOCTYPE html>
 <html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-  html, body, #mapa { margin: 0; height: 100%; background: #FFFBEB; }
+  html, body, #mapa { margin: 0; height: 100%; background: ${escuro ? '#0F172A' : '#FFFBEB'}; }
+  ${escuro ? '.leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9); }' : ''}
+  ${escuro ? '.leaflet-control-zoom a, .leaflet-control-attribution { background: #1E293B !important; color: #CBD5E1 !important; }' : ''}
   .onibus div { width: 34px; height: 34px; border-radius: 50%;
                 background: linear-gradient(135deg, #FBBF24, #F97316);
                 border: 3px solid #fff; box-sizing: border-box;
@@ -92,10 +96,19 @@ const HTML = `<!DOCTYPE html>
   window.ReactNativeWebView.postMessage('pronto');
 </script>
 </body></html>`;
+}
 
 export function MapaLinha({ paradas = [], onibus = [], seguir = null, altura = 320, aviso, style, enquadrar = false }) {
+  const styles = useStyles();
+  const { cores, escuro } = useTema();
   const ref = useRef(null);
   const [pronto, setPronto] = useState(false);
+  const html = useMemo(() => montarHtml(escuro), [escuro]);
+
+  // tema trocado: a página do mapa recarrega e avisa "pronto" de novo
+  useEffect(() => {
+    setPronto(false);
+  }, [html]);
   const [falhou, setFalhou] = useState(false);
 
   const dados = useMemo(
@@ -122,7 +135,7 @@ export function MapaLinha({ paradas = [], onibus = [], seguir = null, altura = 3
       <WebView
         ref={ref}
         // baseUrl = site do BusZapp: os tiles do OpenStreetMap recebem o mesmo Referer do site
-        source={{ html: HTML, baseUrl: API_BASE_URL }}
+        source={{ html, baseUrl: API_BASE_URL }}
         originWhitelist={['*']}
         onMessage={evento => {
           if (evento.nativeEvent.data === 'pronto') setPronto(true);
@@ -156,7 +169,7 @@ export function MapaLinha({ paradas = [], onibus = [], seguir = null, altura = 3
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   container: {
     borderRadius: raios.xl,
     overflow: 'hidden',
@@ -184,4 +197,4 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   seloTexto: { color: '#FFFFFF', fontWeight: '600', fontSize: 13 },
-});
+}));

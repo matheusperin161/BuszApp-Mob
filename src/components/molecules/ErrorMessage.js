@@ -3,13 +3,16 @@
  * Faixa de erro exibida acima do formulário. Se não houver mensagem,
  * não renderiza nada — quem chama não precisa fazer o if.
  */
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Icone } from '../atoms/Icone';
 import { Label } from '../atoms/Label';
-import { cores, espacamentos, raios } from '../../theme';
+import { espacamentos, raios } from '../../theme';
+import { criarEstilos, useTema } from '../../theme/tema';
 
 export function ErrorMessage({ mensagem }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   if (!mensagem) {
     return null;
   }
@@ -22,17 +25,17 @@ export function ErrorMessage({ mensagem }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, escuro }) => ({
   container: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: espacamentos.sm + 2,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: escuro ? cores.perigoFundo : '#FEF2F2',
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: escuro ? '#991B1B' : '#FECACA',
     borderRadius: raios.lg,
     padding: espacamentos.md,
     marginBottom: espacamentos.md,
   },
   texto: { color: cores.perigoTexto, flex: 1, fontSize: 14, lineHeight: 20 },
-});
+}));

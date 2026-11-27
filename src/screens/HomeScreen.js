@@ -5,7 +5,7 @@
  * Melhorias do app: aviso de saldo baixo e atalho para a última linha acompanhada.
  */
 import { useCallback, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Icone } from '../components/atoms/Icone';
@@ -24,7 +24,8 @@ import { obterSessao } from '../services/auth';
 import { listarTransacoes, obterCartao } from '../services/cartao';
 import { enviarAvisoLocal } from '../services/nativos';
 import { obterPreferencias } from '../services/preferencias';
-import { cores, espacamentos, raios, sombra } from '../theme';
+import { espacamentos, raios } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { dinheiro, hora } from '../utils/formato';
 
 // aviso local de saldo baixo: no máximo uma vez por abertura do app
@@ -38,6 +39,8 @@ function saudacao() {
 }
 
 export function HomeScreen({ navigation }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [usuario, setUsuario] = useState(null);
   const [cartao, setCartao] = useState(null);
   const [transacoes, setTransacoes] = useState([]);
@@ -169,7 +172,7 @@ export function HomeScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores, sombra }) => ({
   atalhos: { flexDirection: 'row', gap: espacamentos.md, marginBottom: espacamentos.lg },
   continuar: {
     flexDirection: 'row',
@@ -188,4 +191,4 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   vazio: { alignItems: 'center', paddingVertical: espacamentos.md, gap: espacamentos.sm },
   vazioTexto: { textAlign: 'center' },
-});
+}));

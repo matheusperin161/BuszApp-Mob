@@ -5,7 +5,7 @@
  * Criar e editar cadastros continua no painel do site.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, StyleSheet, Switch, View } from 'react-native';
+import { Alert, Switch, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Input } from '../components/atoms/Input';
@@ -17,7 +17,8 @@ import { ScreenTemplate } from '../components/templates/ScreenTemplate';
 import { rotuloTipoCartao } from '../constants/cartao';
 import { voltarAoLogin } from '../navigation/acoes';
 import { ativarRota, cartoes, motoristas, nomeDaRota, rotas, veiculos } from '../services/admin';
-import { cores, espacamentos } from '../theme';
+import { espacamentos } from '../theme';
+import { criarEstilos, useTema } from '../theme/tema';
 import { dataCurta, dinheiro, mascararCartao } from '../utils/formato';
 
 const ABAS = [
@@ -58,6 +59,8 @@ function textoBusca(aba, item) {
 }
 
 export function AdminCadastrosScreen({ navigation, route }) {
+  const styles = useStyles();
+  const { cores } = useTema();
   const [aba, setAba] = useState(route.params?.aba ?? 'motoristas');
   const [dados, setDados] = useState({});
   const [busca, setBusca] = useState('');
@@ -236,11 +239,11 @@ export function AdminCadastrosScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = criarEstilos(({ cores }) => ({
   busca: { marginBottom: espacamentos.md, backgroundColor: cores.superficie },
   estado: { minHeight: 200 },
   contagem: { marginBottom: espacamentos.sm, paddingHorizontal: espacamentos.xs },
   vazio: { textAlign: 'center', marginTop: espacamentos.lg },
   chave: { alignItems: 'center' },
   saldo: { fontWeight: '800', color: cores.sucesso },
-});
+}));
